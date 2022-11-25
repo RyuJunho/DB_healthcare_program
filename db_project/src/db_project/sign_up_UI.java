@@ -2,9 +2,6 @@ package db_project;
 import java.awt.*;
 import javax.swing.*;
 
-import db_project.login_UI.id_pw_Panel;
-
-
 
 public class sign_up_UI extends JFrame{
 
@@ -46,7 +43,7 @@ public class sign_up_UI extends JFrame{
 
 		
 		//화면 설정
-		setTitle("로그인 화면");		// 타이틀
+		setTitle("회원가입 화면");		// 타이틀
 		setSize(500,400);				//사이즈
 		setLocationRelativeTo(null);	//화면 중앙 배치
 		setResizable(false);			// 화면 사이즈 고정
@@ -55,7 +52,7 @@ public class sign_up_UI extends JFrame{
 	}
 	
 	
-	// 중앙 패널 (ID, PW 입력창)
+	// 입력창 패널
 	class input_Panel extends JPanel {
 		public input_Panel(String text) {
 			setLayout(new FlowLayout(FlowLayout.CENTER, 30, 40));
