@@ -1,6 +1,8 @@
 package db_project;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
+
 
 
 public class sign_up_UI extends JFrame{
@@ -40,7 +42,15 @@ public class sign_up_UI extends JFrame{
 		JButton sign_up_btn = new JButton("가입");
 		sign_up_btn.setBounds(200,300,80,30);
 		c.add(sign_up_btn);
-
+		//가입 버튼 클릭시 이벤트
+		sign_up_btn.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				login_UI login = new login_UI();		//로그인 화면 생성
+				login.setVisible(true);
+				setVisible(false);							//회원가입창 닫음
+			}
+		});
+		
 		
 		//화면 설정
 		setTitle("회원가입 화면");		// 타이틀

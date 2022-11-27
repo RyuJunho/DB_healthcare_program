@@ -1,7 +1,10 @@
 package db_project;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
+import org.knowm.xchart.*;
+
 
 public class main_UI extends JFrame {
 	private String [] disease = {"비만","고혈압","간 기능 이상","당뇨병","이상지질 혈증"};
@@ -32,8 +35,14 @@ public class main_UI extends JFrame {
 		person_info.setBounds(30, 110, 400, 200);
 		c.add(person_info);
 		
+		//chart
+		double[] xData = new double[] {0.0, 1.0, 2.0};
+		double[] yData = new double[] {2.0, 1.0, 0.0}; 
+		XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+
+		
 		//그래프 패널
-		graph_Panel graph = new graph_Panel();
+		JPanel graph = new XChartPanel(chart);
 		graph.setBounds(450, 110, 500, 400);
 		c.add(graph);
 		
@@ -57,6 +66,13 @@ public class main_UI extends JFrame {
 		JButton data_btn = new JButton("건강검진 데이터 관리");
 		data_btn.setBounds(30,700,200,40);
 		c.add(data_btn);
+		//로그인 버튼 클릭시 이벤트
+		data_btn.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				data_UI data = new data_UI();		//회원 데이터 화면 생성
+				data.setVisible(true);
+			}
+		});
 		
 	
 		
@@ -89,15 +105,6 @@ public class main_UI extends JFrame {
 			JLabel sex_lb = new JLabel("성별 : ".concat(sex));
 			sex_lb.setBounds(10,80,500,40);
 			add(sex_lb);
-			
-			setBackground(Color.WHITE);
-		}
-	}
-	
-	
-	// 목표질환에 따른 수치값 그래프 패널
-	class graph_Panel extends JPanel {
-		public graph_Panel() {
 			
 			setBackground(Color.WHITE);
 		}

@@ -1,7 +1,7 @@
 package db_project;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
-
 
 
 public class login_UI extends JFrame{
@@ -29,10 +29,27 @@ public class login_UI extends JFrame{
 		JButton sign_up_btn = new JButton("회원가입");
 		sign_up_btn.setBounds(120,200,100,30);
 		c.add(sign_up_btn);
+		//회원가입 버튼 클릭시 이벤트
+		sign_up_btn.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				sign_up_UI sign_up = new sign_up_UI();		//회원가입 화면 생성
+				sign_up.setVisible(true);
+				setVisible(false);							//로그인창 닫음
+			}
+		});
+		
 		//로그인 버튼
 		JButton login_btn = new JButton("로그인");
 		login_btn.setBounds(280,200,100,30);
 		c.add(login_btn);
+		//로그인 버튼 클릭시 이벤트
+		login_btn.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				main_UI main = new main_UI();		//메인 화면 생성
+				main.setVisible(true);
+				setVisible(false);					//로그인창 닫음
+			}
+		});
 		
 		
 		//화면 설정
@@ -44,7 +61,7 @@ public class login_UI extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	//닫기 누르면 종료
 	}
 	
-	
+
 	// 중앙 패널 (ID, PW 입력창)
 	class id_pw_Panel extends JPanel {
 		public id_pw_Panel(String id_or_pw) {
