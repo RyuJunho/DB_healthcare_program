@@ -45,7 +45,7 @@ public class login_UI extends JFrame{
 		//로그인 버튼 클릭시 이벤트
 		login_btn.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				main_UI main = new main_UI();		//메인 화면 생성
+				main_UI main = new main_UI("1","1111");		//메인 화면 생성
 				main.setVisible(true);
 				setVisible(false);					//로그인창 닫음
 			}

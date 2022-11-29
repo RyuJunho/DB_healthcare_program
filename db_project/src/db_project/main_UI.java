@@ -2,16 +2,42 @@ package db_project;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.DriverManager;
+
 import javax.swing.*;
 import org.knowm.xchart.*;
-
+import java.sql.*;
 
 public class main_UI extends JFrame {
 	private String [] disease = {"비만","고혈압","간 기능 이상","당뇨병","이상지질 혈증"};
 	private String [] checkup = {""};
-	 
+	private String user_id = "1";
+	private String user_pw = "1111";
+	
+
 	//생성자
-	public main_UI() {
+	public main_UI(String user_id, String user_pw) {
+		this.user_id = user_id;
+		this.user_pw = user_pw;
+		
+		
+		//데이터베이스 연결
+		String url = "jdbc:oracle:thin:@localhost:1521:XE";
+		String id = "PROJECT";
+		String pw = "1234qwer";
+		Connection con = null;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("드라이버 적재 성공");
+			con = DriverManager.getConnection(url, id, pw);
+			System.out.println("데이터베이스 연결 성공");
+		}catch(ClassNotFoundException e) {
+			System.out.println("드라이버를 찾을 수 없음");
+		}catch(SQLException e) {
+			System.out.println("연결에 실패");
+		}
+
+
 		Container c = getContentPane();	// 컨텐트팬 추출
 		c.setLayout(null);		// 배치관리자 제거
 		
@@ -30,8 +56,30 @@ public class main_UI extends JFrame {
 		person_info_lb.setBounds(30,80,200,20);
 		c.add(person_info_lb);
 		
+		
+		// ID, PW를 바탕으로 회원정보를 불러와서 출력
+		String name = "";				// 이름
+		String person_number = "";		// 주민등록번호
+		String sex = "";				// 성별
+		
+		try {
+			Statement stmt = con.createStatement();
+			// 쿼리문
+			ResultSet rs = stmt.executeQuery("select 이름,주민등록번호,성별 from 회원 "
+					+ "where ID = " + user_id
+					+ "and PW = " + user_pw);
+			
+			// 결과를 변수에 저장
+			while(rs.next()) {
+				name = rs.getString("이름");
+				person_number = rs.getString("주민등록번호");
+				sex = rs.getString("성별");
+			}
+		}catch(SQLException e) { System.out.println("sql문 오류"); }
+		
+		
 		//회원정보 패널
-		person_info_Panel person_info = new person_info_Panel("류준호","990205","남");
+		person_info_Panel person_info = new person_info_Panel(name,person_number,sex);
 		person_info.setBounds(30, 110, 400, 200);
 		c.add(person_info);
 		
@@ -69,7 +117,7 @@ public class main_UI extends JFrame {
 		//로그인 버튼 클릭시 이벤트
 		data_btn.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				data_UI data = new data_UI();		//회원 데이터 화면 생성
+				data_UI data = new data_UI("1","1111");		//회원 데이터 화면 생성
 				data.setVisible(true);
 			}
 		});
@@ -97,7 +145,7 @@ public class main_UI extends JFrame {
 			add(name_lb);
 
 			//주민등록번호
-			JLabel person_number_lb = new JLabel("주민등록번호 : ".concat(birth).concat(" - OOOOOOOO"));
+			JLabel person_number_lb = new JLabel("주민등록번호 : ".concat(birth));
 			person_number_lb.setBounds(10,40,500,40);
 			add(person_number_lb);
 			
@@ -114,7 +162,7 @@ public class main_UI extends JFrame {
 	
 	public static void main(String[] args) {
 		// 로그인 화면 생성
-		main_UI main = new main_UI();
+		main_UI main = new main_UI("1","1111");
 	}
 
 }
