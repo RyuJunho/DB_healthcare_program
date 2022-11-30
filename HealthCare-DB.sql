@@ -1,485 +1,481 @@
 ----------------------------------------------------------------
------------- »ç¿ëÀÚ »ý¼º ------------ 
+------------ ì‚¬ìš©ìž ìƒì„± ------------ 
 ----------------------------------------------------------------
 /* ########  ID : SYSTEM ######## */
 
 ALTER session set "_ORACLE_SCRIPT"=true;
-DROP USER health CASCADE; -- ±âÁ¸ »ç¿ëÀÚ »èÁ¦(ÇöÀç Á¢¼ÓµÇ¾î ÀÖÀ¸¸é »èÁ¦ ¾È µÊ)
-	-- CASCADE option : °ü·Ã ½ºÅ°¸¶ °³Ã¼µéµµ ÇÔ²² »èÁ¦.  Default´Â No Action
-CREATE USER health IDENTIFIED BY 1234  -- »ç¿ëÀÚ ID : health, ºñ¹Ð¹øÈ£ : 1234
+DROP USER health CASCADE; -- ê¸°ì¡´ ì‚¬ìš©ìž ì‚­ì œ(í˜„ìž¬ ì ‘ì†ë˜ì–´ ìžˆìœ¼ë©´ ì‚­ì œ ì•ˆ ë¨)
+	-- CASCADE option : ê´€ë ¨ ìŠ¤í‚¤ë§ˆ ê°œì²´ë“¤ë„ í•¨ê»˜ ì‚­ì œ.  DefaultëŠ” No Action
+CREATE USER health IDENTIFIED BY 1234  -- ì‚¬ìš©ìž ID : health, ë¹„ë°€ë²ˆí˜¸ : 1234
     DEFAULT TABLESPACE USERS
     TEMPORARY TABLESPACE TEMP;
-GRANT connect, resource, dba TO health; -- ±ÇÇÑ ºÎ¿©
+GRANT connect, resource, dba TO health; -- ê¶Œí•œ ë¶€ì—¬
 
 -----------------------------------------------
------------------ Å×ÀÌºí »ý¼º ------------------
+----------------- í…Œì´ë¸” ìƒì„± ------------------
 -----------------------------------------------
 /*############ ID : health #############*/
 
-CREATE TABLE È¸¿ø(
+CREATE TABLE íšŒì›(
     ID NUMBER(10) PRIMARY KEY,
     PW VARCHAR(20) NOT NULL,
-	ÀÌ¸§	NCHAR(5) NOT NULL,
-	ÁÖ¹Îµî·Ï¹øÈ£ NCHAR(20) NOT NULL,
-	¼ºº°	NCHAR(3) NOT NULL
+	ì´ë¦„	NCHAR(5) NOT NULL,
+	ì£¼ë¯¼ë“±ë¡ë²ˆí˜¸ NCHAR(20) NOT NULL,
+	ì„±ë³„	NCHAR(3) NOT NULL
 );
 
-CREATE TABLE ÁúÈ¯(
-    °ËÁøÇ×¸ñ NCHAR(20) NOT NULL,
-    ÁúÈ¯¸í NCHAR(20) NOT NULL,
-    Á¶»çÇ×¸ñ NCHAR(20) NOT NULL,
-    ¼ºº°°ª NCHAR(3) NOT NULL,
-    ÃÖ¼ÒÁ¤»ó°ª NUMBER(10),
-    ÃÖ°íÁ¤»ó°ª NUMBER(10),
-    CONSTRAINT ÁúÈ¯_PK PRIMARY KEY(Á¶»çÇ×¸ñ,¼ºº°°ª)
+CREATE TABLE ì§ˆí™˜(
+    ê²€ì§„í•­ëª© NCHAR(20) NOT NULL,
+    ì§ˆí™˜ëª… NCHAR(20) NOT NULL,
+    ì¡°ì‚¬í•­ëª© NCHAR(20) NOT NULL,
+    ì„±ë³„ê°’ NCHAR(3) NOT NULL,
+    ìµœì†Œì •ìƒê°’ NUMBER(10),
+    ìµœê³ ì •ìƒê°’ NUMBER(10),
+    CONSTRAINT ì§ˆí™˜_PK PRIMARY KEY(ì¡°ì‚¬í•­ëª©,ì„±ë³„ê°’)
 );
 
-CREATE TABLE È¸¿ø¼öÄ¡(
-    °Ë»ç³¯Â¥ DATE,
+CREATE TABLE íšŒì›ìˆ˜ì¹˜(
+    ê²€ì‚¬ë‚ ì§œ DATE,
     ID NUMBER(10),
-    Á¶»çÇ×¸ñ NCHAR(20),
-    ¼ºº°°ª NCHAR(3),
-    ¼öÄ¡°ª NUMBER(10),
-    ÀÌ»óÀ¯¹« CHAR(1) CHECK(ÀÌ»óÀ¯¹« IN ('0','1')),  --¿À¶óÅ¬¿¡¼± BOOLEANÀÌ ¾ø¾î 0°ú 1·Î Ç¥Çö
-    FOREIGN KEY (ID) REFERENCES È¸¿ø(ID),
-    FOREIGN KEY (Á¶»çÇ×¸ñ,¼ºº°°ª) REFERENCES ÁúÈ¯(Á¶»çÇ×¸ñ,¼ºº°°ª),
-    CONSTRAINT È¸¿ø¼öÄ¡_PK PRIMARY KEY(°Ë»ç³¯Â¥,ID,Á¶»çÇ×¸ñ,¼ºº°°ª)
+    ì¡°ì‚¬í•­ëª© NCHAR(20),
+    ì„±ë³„ê°’ NCHAR(3),
+    ìˆ˜ì¹˜ê°’ NUMBER(10,2),   -- ì‹¤ìˆ˜ê°’ ë„£ê¸° ìœ„í•´ (10,2)ë¡œ ìˆ˜ì • (ì†Œìˆ˜ì  ë‘˜ì§¸ìžë¦¬ê¹Œì§€)
+    ì´ìƒìœ ë¬´ CHAR(1) CHECK(ì´ìƒìœ ë¬´ IN ('0','1')),  --ì˜¤ë¼í´ì—ì„  BOOLEANì´ ì—†ì–´ 0ê³¼ 1ë¡œ í‘œí˜„
+    FOREIGN KEY (ID) REFERENCES íšŒì›(ID),
+    FOREIGN KEY (ì¡°ì‚¬í•­ëª©,ì„±ë³„ê°’) REFERENCES ì§ˆí™˜(ì¡°ì‚¬í•­ëª©,ì„±ë³„ê°’),
+    CONSTRAINT íšŒì›ìˆ˜ì¹˜_PK PRIMARY KEY(ê²€ì‚¬ë‚ ì§œ,ID,ì¡°ì‚¬í•­ëª©,ì„±ë³„ê°’)
 );
 
 -----------------------------------------------
------------------ µ¥ÀÌÅÍ ÀÔ·Â ------------------
+----------------- ë°ì´í„° ìž…ë ¥ ------------------
 -----------------------------------------------
 
--- È¸¿ø(ID, PW, ÀÌ¸§, ÁÖ¹Îµî·Ï¹øÈ£, ¼ºº°)
-INSERT INTO È¸¿ø VALUES(1,'1111','Á¤°¡¿µ','011029-1111111','¿©');
-INSERT INTO È¸¿ø VALUES(2,'2222','·ùÁØÈ£','222222-2222222','³²');
-INSERT INTO È¸¿ø VALUES(3,'3333','À±´ëÈ£','333333-3333333','³²');
+-- íšŒì›(ID, PW, ì´ë¦„, ì£¼ë¯¼ë“±ë¡ë²ˆí˜¸, ì„±ë³„)
+INSERT INTO íšŒì› VALUES(1,'1111','ì •ê°€ì˜','011029-1111111','ì—¬');
+INSERT INTO íšŒì› VALUES(2,'2222','ë¥˜ì¤€í˜¸','222222-2222222','ë‚¨');
+INSERT INTO íšŒì› VALUES(3,'3333','ìœ¤ëŒ€í˜¸','333333-3333333','ë‚¨');
 
 
--- ÁúÈ¯(°ËÁøÇ×¸ñ, ÁúÈ¯¸í, Á¶»çÇ×¸ñ, ¼ºº°°ª, ÃÖ¼ÒÁ¤»ó°ª, ÃÖ°íÁ¤»ó°ª)
--- ³²³à ¼ºº°µû¶ó Á¤»ó°ªÀÌ ³ª´µ´Â °ÍÀº '³²'/'¿©' ÀÌ¿Ü '°øÅë'
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','ºñ¸¸','½ÅÀå','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','ºñ¸¸','Ã¼Áß','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','ºñ¸¸','Çã¸®µÑ·¹','³²',NULL,90);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','ºñ¸¸','Çã¸®µÑ·¹','¿©',NULL,85);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','ºñ¸¸','Ã¼Áú·®Áö¼ö','°øÅë',18.5,24.9);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','½Ã°¢ ÀÌ»ó','½Ã·Â(ÁÂ)','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','½Ã°¢ ÀÌ»ó','½Ã·Â(¿ì)','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','Ã»·Â ÀÌ»ó','Ã»·Â(ÁÂ)','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','Ã»·Â ÀÌ»ó','Ã»·Â(¿ì)','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('°èÃø °Ë»ç','°íÇ÷¾Ð','Ç÷¾Ð','°øÅë',80,120);
-INSERT INTO ÁúÈ¯ VALUES('¿ä°Ë»ç','½ÅÀåÁúÈ¯','¿ä´Ü¹é','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','ºóÇ÷','Ç÷»ö¼Ò','³²',13,16.5);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','ºóÇ÷','Ç÷»ö¼Ò','¿©',12,15.5);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','´ç´¢º´','½ÄÀüÇ÷´ç','°øÅë',NULL,100);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°íÇ÷¾ÐÀÌ»óÁöÁúÇ÷Áõµ¿¸Æ°æÈ­','ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',NULL,200);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°íÇ÷¾ÐÀÌ»óÁöÁúÇ÷Áõµ¿¸Æ°æÈ­','HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',60,NULL);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°íÇ÷¾ÐÀÌ»óÁöÁúÇ÷Áõµ¿¸Æ°æÈ­','Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',100,150);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°íÇ÷¾ÐÀÌ»óÁöÁúÇ÷Áõµ¿¸Æ°æÈ­','LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',NULL,100);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','¸¸¼º½ÅÀåÁúÈ¯','Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',NULL,1.5);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','AST(SGOT)','°øÅë',NULL,40);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','ALT(SGPT)','°øÅë',NULL,35);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',11,63);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','¿©',8,35);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','BÇü°£¿°Ç×¿ø','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','BÇü°£¿°Ç×Ã¼','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('Ç÷¾×°Ë»ç','°£ÀåÁúÈ¯','°¨¿°°Ë»ç°á°ú','°øÅë',NULL,NULL);
-INSERT INTO ÁúÈ¯ VALUES('¿µ»ó°Ë»ç','Æó°áÇÙÈäºÎÁúÈ¯','ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',NULL,NULL);
+-- ì§ˆí™˜(ê²€ì§„í•­ëª©, ì§ˆí™˜ëª…, ì¡°ì‚¬í•­ëª©, ì„±ë³„ê°’, ìµœì†Œì •ìƒê°’, ìµœê³ ì •ìƒê°’)
+-- ë‚¨ë…€ ì„±ë³„ë”°ë¼ ì •ìƒê°’ì´ ë‚˜ë‰˜ëŠ” ê²ƒì€ 'ë‚¨'/'ì—¬' ì´ì™¸ 'ê³µí†µ'
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ë¹„ë§Œ','ì‹ ìž¥','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ë¹„ë§Œ','ì²´ì¤‘','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ë¹„ë§Œ','í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',NULL,90);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ë¹„ë§Œ','í—ˆë¦¬ë‘˜ë ˆ','ì—¬',NULL,85);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ë¹„ë§Œ','ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',18.5,24.9);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ì‹œê° ì´ìƒ','ì‹œë ¥(ì¢Œ)','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ì‹œê° ì´ìƒ','ì‹œë ¥(ìš°)','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ì²­ë ¥ ì´ìƒ','ì²­ë ¥(ì¢Œ)','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ì²­ë ¥ ì´ìƒ','ì²­ë ¥(ìš°)','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ê³„ì¸¡ ê²€ì‚¬','ê³ í˜ˆì••','í˜ˆì••','ê³µí†µ',80,120);
+INSERT INTO ì§ˆí™˜ VALUES('ìš”ê²€ì‚¬','ì‹ ìž¥ì§ˆí™˜','ìš”ë‹¨ë°±','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ë¹ˆí˜ˆ','í˜ˆìƒ‰ì†Œ','ë‚¨',13,16.5);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ë¹ˆí˜ˆ','í˜ˆìƒ‰ì†Œ','ì—¬',12,15.5);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ë‹¹ë‡¨ë³‘','ì‹ì „í˜ˆë‹¹','ê³µí†µ',NULL,100);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê³ í˜ˆì••ì´ìƒì§€ì§ˆí˜ˆì¦ë™ë§¥ê²½í™”','ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',NULL,200);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê³ í˜ˆì••ì´ìƒì§€ì§ˆí˜ˆì¦ë™ë§¥ê²½í™”','HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',60,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê³ í˜ˆì••ì´ìƒì§€ì§ˆí˜ˆì¦ë™ë§¥ê²½í™”','íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',100,150);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê³ í˜ˆì••ì´ìƒì§€ì§ˆí˜ˆì¦ë™ë§¥ê²½í™”','LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',NULL,100);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ë§Œì„±ì‹ ìž¥ì§ˆí™˜','í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',NULL,1.5);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','AST(SGOT)','ê³µí†µ',NULL,40);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','ALT(SGPT)','ê³µí†µ',NULL,35);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',11,63);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','ê°ë§ˆì§€í‹°í”¼(y-GTP)','ì—¬',8,35);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('í˜ˆì•¡ê²€ì‚¬','ê°„ìž¥ì§ˆí™˜','ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',NULL,NULL);
+INSERT INTO ì§ˆí™˜ VALUES('ì˜ìƒê²€ì‚¬','íê²°í•µí‰ë¶€ì§ˆí™˜','í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',NULL,NULL);
 
 
--- È¸¿ø¼öÄ¡(°Ë»ç³¯Â¥, ID, Á¶»çÇ×¸ñ, ¼ºº°°ª, ¼öÄ¡°ª, ÀÌ»óÀ¯¹«)
--- ÁúÈ¯¿¡ (Á¶»çÇ×¸ñ, ¼ºº°°ª) °ªÀÌ ÀÖ¾î¾ß µÊ
--- ÀÌ»óÀ¯¹«´Â '0' : ÀÌ»óX(Á¤»ó) '1' : ÀÌ»ó
-ALTER session set NLS_DATE_FORMAT = 'YYYY/MM/DD'; --³¯Â¥¸¸ ³Öµµ·Ï DATE Æ÷¸Ë º¯°æ
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'½ÅÀå','°øÅë',170,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ã¼Áß','°øÅë',52,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Çã¸®µÑ·¹','¿©',70,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ã¼Áú·®Áö¼ö','°øÅë',20,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'½Ã·Â(ÁÂ)','°øÅë',0.8,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'½Ã·Â(¿ì)','°øÅë',0.8,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ã»·Â(ÁÂ)','°øÅë',80,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ã»·Â(¿ì)','°øÅë',100,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ç÷¾Ð','°øÅë',75,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'¿ä´Ü¹é','°øÅë',50,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ç÷»ö¼Ò','¿©',10,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'½ÄÀüÇ÷´ç','°øÅë',90,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',150,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',80,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',140,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',100,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'AST(SGOT)','°øÅë',50,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'ALT(SGPT)','°øÅë',40,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','¿©',30,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'BÇü°£¿°Ç×¿ø','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'BÇü°£¿°Ç×Ã¼','°øÅë',2.1,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'°¨¿°°Ë»ç°á°ú','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',1,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',1,'0');
+-- íšŒì›ìˆ˜ì¹˜(ê²€ì‚¬ë‚ ì§œ, ID, ì¡°ì‚¬í•­ëª©, ì„±ë³„ê°’, ìˆ˜ì¹˜ê°’, ì´ìƒìœ ë¬´)
+-- ì§ˆí™˜ì— (ì¡°ì‚¬í•­ëª©, ì„±ë³„ê°’) ê°’ì´ ìžˆì–´ì•¼ ë¨
+-- ì´ìƒìœ ë¬´ëŠ” NULL : ì´ìƒX(ì •ìƒ) NULL : ì´ìƒ
+ALTER session set NLS_DATE_FORMAT = 'YYYY/MM/DD'; --ë‚ ì§œë§Œ ë„£ë„ë¡ DATE í¬ë§· ë³€ê²½
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì‹ ìž¥','ê³µí†µ',170,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì²´ì¤‘','ê³µí†µ',52,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'í—ˆë¦¬ë‘˜ë ˆ','ì—¬',70,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',20,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',0.8,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì‹œë ¥(ìš°)','ê³µí†µ',0.8,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì²­ë ¥(ìš°)','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'í˜ˆì••','ê³µí†µ',75,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ìš”ë‹¨ë°±','ê³µí†µ',50,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'í˜ˆìƒ‰ì†Œ','ì—¬',10,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',90,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',150,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',140,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'AST(SGOT)','ê³µí†µ',50,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ALT(SGPT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ì—¬',30,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.1,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',1,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',1,NULL);
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'½ÅÀå','°øÅë',170,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ã¼Áß','°øÅë',58,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Çã¸®µÑ·¹','¿©',77,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ã¼Áú·®Áö¼ö','°øÅë',23,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'½Ã·Â(ÁÂ)','°øÅë',0.8,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'½Ã·Â(¿ì)','°øÅë',0.8,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ã»·Â(ÁÂ)','°øÅë',85,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ã»·Â(¿ì)','°øÅë',100,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ç÷¾Ð','°øÅë',70,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'¿ä´Ü¹é','°øÅë',45,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ç÷»ö¼Ò','¿©',9.5,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'½ÄÀüÇ÷´ç','°øÅë',95,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',155,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',83,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',135,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',105,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'AST(SGOT)','°øÅë',40,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'ALT(SGPT)','°øÅë',35,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','¿©',30,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'BÇü°£¿°Ç×¿ø','°øÅë',1.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'BÇü°£¿°Ç×Ã¼','°øÅë',2.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'°¨¿°°Ë»ç°á°ú','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/10/25',1,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',1.5,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì‹ ìž¥','ê³µí†µ',170,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì²´ì¤‘','ê³µí†µ',58,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'í—ˆë¦¬ë‘˜ë ˆ','ì—¬',77,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',23,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',0.8,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì‹œë ¥(ìš°)','ê³µí†µ',0.8,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',85,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì²­ë ¥(ìš°)','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'í˜ˆì••','ê³µí†µ',70,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ìš”ë‹¨ë°±','ê³µí†µ',45,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'í˜ˆìƒ‰ì†Œ','ì—¬',9.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',155,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',83,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',135,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',105,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'AST(SGOT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ALT(SGPT)','ê³µí†µ',35,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ì—¬',30,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/10/25',1,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',1.5,NULL);
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'½ÅÀå','°øÅë',170,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ã¼Áß','°øÅë',55,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Çã¸®µÑ·¹','¿©',75,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ã¼Áú·®Áö¼ö','°øÅë',22,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'½Ã·Â(ÁÂ)','°øÅë',0.7,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'½Ã·Â(¿ì)','°øÅë',0.7,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ã»·Â(ÁÂ)','°øÅë',90,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ã»·Â(¿ì)','°øÅë',95,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ç÷¾Ð','°øÅë',75,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'¿ä´Ü¹é','°øÅë',48,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ç÷»ö¼Ò','¿©',12,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'½ÄÀüÇ÷´ç','°øÅë',87,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',132,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',73,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',111,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',115,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.5,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'AST(SGOT)','°øÅë',40,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'ALT(SGPT)','°øÅë',35,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','¿©',30,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'BÇü°£¿°Ç×¿ø','°øÅë',1.4,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'BÇü°£¿°Ç×Ã¼','°øÅë',2.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'°¨¿°°Ë»ç°á°ú','°øÅë',1.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/12/25',1,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',1.0,'0');
-
-
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'½ÅÀå','°øÅë',170,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ã¼Áß','°øÅë',69,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Çã¸®µÑ·¹','¿©',76,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ã¼Áú·®Áö¼ö','°øÅë',20.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'½Ã·Â(ÁÂ)','°øÅë',0.7,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'½Ã·Â(¿ì)','°øÅë',0.7,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ã»·Â(ÁÂ)','°øÅë',93,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ã»·Â(¿ì)','°øÅë',91,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ç÷¾Ð','°øÅë',85,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'¿ä´Ü¹é','°øÅë',49,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ç÷»ö¼Ò','¿©',12,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'½ÄÀüÇ÷´ç','°øÅë',102,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',189,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',61,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',153,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',95,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.5,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'AST(SGOT)','°øÅë',35,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'ALT(SGPT)','°øÅë',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','¿©',37,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'BÇü°£¿°Ç×¿ø','°øÅë',1.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'BÇü°£¿°Ç×Ã¼','°øÅë',2.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'°¨¿°°Ë»ç°á°ú','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/12',1,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',1.1,'0');
-
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'½ÅÀå','°øÅë',171,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ã¼Áß','°øÅë',73,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Çã¸®µÑ·¹','¿©',86,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ã¼Áú·®Áö¼ö','°øÅë',25,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'½Ã·Â(ÁÂ)','°øÅë',0.7,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'½Ã·Â(¿ì)','°øÅë',0.7,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ã»·Â(ÁÂ)','°øÅë',93,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ã»·Â(¿ì)','°øÅë',93,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ç÷¾Ð','°øÅë',88,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'¿ä´Ü¹é','°øÅë',43,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ç÷»ö¼Ò','¿©',13,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'½ÄÀüÇ÷´ç','°øÅë',105,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',202,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',67,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',153,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',102,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.5,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'AST(SGOT)','°øÅë',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'ALT(SGPT)','°øÅë',28,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','¿©',29,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'BÇü°£¿°Ç×¿ø','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'BÇü°£¿°Ç×Ã¼','°øÅë',2.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'°¨¿°°Ë»ç°á°ú','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/10/12',1,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',1.1,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì‹ ìž¥','ê³µí†µ',170,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì²´ì¤‘','ê³µí†µ',55,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'í—ˆë¦¬ë‘˜ë ˆ','ì—¬',75,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',22,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',0.7,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì‹œë ¥(ìš°)','ê³µí†µ',0.7,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',90,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì²­ë ¥(ìš°)','ê³µí†µ',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'í˜ˆì••','ê³µí†µ',75,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ìš”ë‹¨ë°±','ê³µí†µ',48,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'í˜ˆìƒ‰ì†Œ','ì—¬',12,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',87,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',132,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',73,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',111,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',115,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'AST(SGOT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ALT(SGPT)','ê³µí†µ',35,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ì—¬',30,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.4,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/12/25',1,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',1.0,NULL);
 
 
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì‹ ìž¥','ê³µí†µ',170,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì²´ì¤‘','ê³µí†µ',69,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'í—ˆë¦¬ë‘˜ë ˆ','ì—¬',76,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',20.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',0.7,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì‹œë ¥(ìš°)','ê³µí†µ',0.7,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',93,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì²­ë ¥(ìš°)','ê³µí†µ',91,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'í˜ˆì••','ê³µí†µ',85,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ìš”ë‹¨ë°±','ê³µí†µ',49,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'í˜ˆìƒ‰ì†Œ','ì—¬',12,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',102,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',189,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',61,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',153,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'AST(SGOT)','ê³µí†µ',35,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ALT(SGPT)','ê³µí†µ',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ì—¬',37,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/12',1,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',1.1,NULL);
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'½ÅÀå','°øÅë',178,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ã¼Áß','°øÅë',75,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Çã¸®µÑ·¹','³²',80,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ã¼Áú·®Áö¼ö','°øÅë',20,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'½Ã·Â(ÁÂ)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'½Ã·Â(¿ì)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ã»·Â(ÁÂ)','°øÅë',100,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ã»·Â(¿ì)','°øÅë',100,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ç÷¾Ð','°øÅë',125,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'¿ä´Ü¹é','°øÅë',60,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ç÷»ö¼Ò','³²',16,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'½ÄÀüÇ÷´ç','°øÅë',90,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',155,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',90,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',142,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',50,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.8,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'AST(SGOT)','°øÅë',30,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'ALT(SGPT)','°øÅë',40,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',34,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'BÇü°£¿°Ç×¿ø','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'BÇü°£¿°Ç×Ã¼','°øÅë',2.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'°¨¿°°Ë»ç°á°ú','°øÅë',1.1,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',2,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',2.3,'0');
-
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'½ÅÀå','°øÅë',178,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ã¼Áß','°øÅë',70,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Çã¸®µÑ·¹','³²',77,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ã¼Áú·®Áö¼ö','°øÅë',18,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'½Ã·Â(ÁÂ)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'½Ã·Â(¿ì)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ã»·Â(ÁÂ)','°øÅë',110,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ã»·Â(¿ì)','°øÅë',103,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ç÷¾Ð','°øÅë',115,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'¿ä´Ü¹é','°øÅë',62,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ç÷»ö¼Ò','³²',16.9,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'½ÄÀüÇ÷´ç','°øÅë',85,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',132,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',100,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',121,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',95,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',2.3,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'AST(SGOT)','°øÅë',21,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'ALT(SGPT)','°øÅë',40,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',45,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'BÇü°£¿°Ç×¿ø','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'BÇü°£¿°Ç×Ã¼','°øÅë',3.9,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'°¨¿°°Ë»ç°á°ú','°øÅë',3.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/11/23',2,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',2.2,'0');
-
-
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'½ÅÀå','°øÅë',178,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ã¼Áß','°øÅë',82,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Çã¸®µÑ·¹','³²',88,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ã¼Áú·®Áö¼ö','°øÅë',25,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'½Ã·Â(ÁÂ)','°øÅë',1.1,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'½Ã·Â(¿ì)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ã»·Â(ÁÂ)','°øÅë',110,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ã»·Â(¿ì)','°øÅë',103,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ç÷¾Ð','°øÅë',121,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'¿ä´Ü¹é','°øÅë',60,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ç÷»ö¼Ò','³²',18,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'½ÄÀüÇ÷´ç','°øÅë',99,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',132,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',100,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',146,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',98,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',2.3,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'AST(SGOT)','°øÅë',35,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'ALT(SGPT)','°øÅë',40,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',40,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'BÇü°£¿°Ç×¿ø','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'BÇü°£¿°Ç×Ã¼','°øÅë',3.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'°¨¿°°Ë»ç°á°ú','°øÅë',3.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/10/23',2,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',2.3,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì‹ ìž¥','ê³µí†µ',171,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì²´ì¤‘','ê³µí†µ',73,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'í—ˆë¦¬ë‘˜ë ˆ','ì—¬',86,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',25,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',0.7,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì‹œë ¥(ìš°)','ê³µí†µ',0.7,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',93,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì²­ë ¥(ìš°)','ê³µí†µ',93,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'í˜ˆì••','ê³µí†µ',88,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ìš”ë‹¨ë°±','ê³µí†µ',43,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'í˜ˆìƒ‰ì†Œ','ì—¬',13,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',105,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',202,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',67,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',153,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',102,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'AST(SGOT)','ê³µí†µ',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ALT(SGPT)','ê³µí†µ',28,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ì—¬',29,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/10/12',1,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',1.1,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'½ÅÀå','°øÅë',178,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ã¼Áß','°øÅë',80,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Çã¸®µÑ·¹','³²',86,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ã¼Áú·®Áö¼ö','°øÅë',23,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'½Ã·Â(ÁÂ)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'½Ã·Â(¿ì)','°øÅë',1.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ã»·Â(ÁÂ)','°øÅë',105,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ã»·Â(¿ì)','°øÅë',106,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ç÷¾Ð','°øÅë',111,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'¿ä´Ü¹é','°øÅë',60,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ç÷»ö¼Ò','³²',18,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'½ÄÀüÇ÷´ç','°øÅë',95,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',165,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',123,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',140,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',87,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',2.5,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'AST(SGOT)','°øÅë',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'ALT(SGPT)','°øÅë',43,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',65,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'BÇü°£¿°Ç×¿ø','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'BÇü°£¿°Ç×Ã¼','°øÅë',3.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'°¨¿°°Ë»ç°á°ú','°øÅë',3.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/10/10',2,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',3.9,'0');
+
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì‹ ìž¥','ê³µí†µ',178,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì²´ì¤‘','ê³µí†µ',75,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',20,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì‹œë ¥(ìš°)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì²­ë ¥(ìš°)','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'í˜ˆì••','ê³µí†µ',125,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ìš”ë‹¨ë°±','ê³µí†µ',60,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'í˜ˆìƒ‰ì†Œ','ë‚¨',16,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',90,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',155,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',90,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',142,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',50,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.8,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'AST(SGOT)','ê³µí†µ',30,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ALT(SGPT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',34,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.1,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',2,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',2.3,NULL);
+
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì‹ ìž¥','ê³µí†µ',178,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì²´ì¤‘','ê³µí†µ',70,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',77,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',18,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì‹œë ¥(ìš°)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',110,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì²­ë ¥(ìš°)','ê³µí†µ',103,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'í˜ˆì••','ê³µí†µ',115,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ìš”ë‹¨ë°±','ê³µí†µ',62,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'í˜ˆìƒ‰ì†Œ','ë‚¨',16.9,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',85,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',132,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',121,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',2.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'AST(SGOT)','ê³µí†µ',21,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ALT(SGPT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',45,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',3.9,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',3.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/11/23',2,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',2.2,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'½ÅÀå','°øÅë',178,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ã¼Áß','°øÅë',87,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Çã¸®µÑ·¹','³²',95,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ã¼Áú·®Áö¼ö','°øÅë',28,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'½Ã·Â(ÁÂ)','°øÅë',0.9,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'½Ã·Â(¿ì)','°øÅë',1.1,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ã»·Â(ÁÂ)','°øÅë',110,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ã»·Â(¿ì)','°øÅë',110,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ç÷¾Ð','°øÅë',135,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'¿ä´Ü¹é','°øÅë',60,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ç÷»ö¼Ò','³²',18,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'½ÄÀüÇ÷´ç','°øÅë',123,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',232,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',123,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',153,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',101,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',2.5,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'AST(SGOT)','°øÅë',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'ALT(SGPT)','°øÅë',48,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',65,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'BÇü°£¿°Ç×¿ø','°øÅë',3.0,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'BÇü°£¿°Ç×Ã¼','°øÅë',3.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'°¨¿°°Ë»ç°á°ú','°øÅë',3.1,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/10',2,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',4.5,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì‹ ìž¥','ê³µí†µ',178,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì²´ì¤‘','ê³µí†µ',82,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',88,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',25,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.1,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì‹œë ¥(ìš°)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',110,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì²­ë ¥(ìš°)','ê³µí†µ',103,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'í˜ˆì••','ê³µí†µ',121,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ìš”ë‹¨ë°±','ê³µí†µ',60,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'í˜ˆìƒ‰ì†Œ','ë‚¨',18,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',99,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',132,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',100,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',146,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',98,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',2.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'AST(SGOT)','ê³µí†µ',35,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ALT(SGPT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',3.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',3.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/10/23',2,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',2.3,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'½ÅÀå','°øÅë',175,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ã¼Áß','°øÅë',65,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Çã¸®µÑ·¹','³²',70,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ã¼Áú·®Áö¼ö','°øÅë',21.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'½Ã·Â(ÁÂ)','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'½Ã·Â(¿ì)','°øÅë',1.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ã»·Â(ÁÂ)','°øÅë',120,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ã»·Â(¿ì)','°øÅë',110,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ç÷¾Ð','°øÅë',140,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'¿ä´Ü¹é','°øÅë',30,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ç÷»ö¼Ò','³²',16.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'½ÄÀüÇ÷´ç','°øÅë',80,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',155,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',62,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',111,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'AST(SGOT)','°øÅë',45,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'ALT(SGPT)','°øÅë',40,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',34,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'BÇü°£¿°Ç×¿ø','°øÅë',5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'BÇü°£¿°Ç×Ã¼','°øÅë',4.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'°¨¿°°Ë»ç°á°ú','°øÅë',3.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2022/11/25',3,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',2.3,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì‹ ìž¥','ê³µí†µ',178,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì²´ì¤‘','ê³µí†µ',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',86,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',23,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì‹œë ¥(ìš°)','ê³µí†µ',1.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',105,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì²­ë ¥(ìš°)','ê³µí†µ',106,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'í˜ˆì••','ê³µí†µ',111,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ìš”ë‹¨ë°±','ê³µí†µ',60,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'í˜ˆìƒ‰ì†Œ','ë‚¨',18,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',165,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',123,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',140,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',87,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',2.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'AST(SGOT)','ê³µí†µ',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ALT(SGPT)','ê³µí†µ',43,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',65,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',3.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',3.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/10/10',2,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',3.9,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'½ÅÀå','°øÅë',175,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ã¼Áß','°øÅë',68,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Çã¸®µÑ·¹','³²',72,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ã¼Áú·®Áö¼ö','°øÅë',21.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'½Ã·Â(ÁÂ)','°øÅë',1.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'½Ã·Â(¿ì)','°øÅë',1.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ã»·Â(ÁÂ)','°øÅë',125,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ã»·Â(¿ì)','°øÅë',112,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ç÷¾Ð','°øÅë',145,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'¿ä´Ü¹é','°øÅë',60,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ç÷»ö¼Ò','³²',20,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'½ÄÀüÇ÷´ç','°øÅë',120,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',112,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',62,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',111,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',1.9,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'AST(SGOT)','°øÅë',80,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'ALT(SGPT)','°øÅë',20,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',63,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'BÇü°£¿°Ç×¿ø','°øÅë',9,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'BÇü°£¿°Ç×Ã¼','°øÅë',2.1,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'°¨¿°°Ë»ç°á°ú','°øÅë',8.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2023/09/25',3,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',2.1,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì‹ ìž¥','ê³µí†µ',178,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì²´ì¤‘','ê³µí†µ',87,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',28,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',0.9,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì‹œë ¥(ìš°)','ê³µí†µ',1.1,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',110,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì²­ë ¥(ìš°)','ê³µí†µ',110,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'í˜ˆì••','ê³µí†µ',135,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ìš”ë‹¨ë°±','ê³µí†µ',60,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'í˜ˆìƒ‰ì†Œ','ë‚¨',18,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',123,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',232,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',123,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',153,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',101,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',2.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'AST(SGOT)','ê³µí†µ',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ALT(SGPT)','ê³µí†µ',48,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',65,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',3.0,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',3.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',3.1,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/10',2,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',4.5,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'½ÅÀå','°øÅë',175,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ã¼Áß','°øÅë',63,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Çã¸®µÑ·¹','³²',68,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ã¼Áú·®Áö¼ö','°øÅë',17,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'½Ã·Â(ÁÂ)','°øÅë',1.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'½Ã·Â(¿ì)','°øÅë',1.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ã»·Â(ÁÂ)','°øÅë',133,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ã»·Â(¿ì)','°øÅë',118,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ç÷¾Ð','°øÅë',110,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'¿ä´Ü¹é','°øÅë',30,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ç÷»ö¼Ò','³²',13,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'½ÄÀüÇ÷´ç','°øÅë',81,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',89,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',62,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',111,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',91,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',0.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'AST(SGOT)','°øÅë',29,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'ALT(SGPT)','°øÅë',20,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',63,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'BÇü°£¿°Ç×¿ø','°øÅë',3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'BÇü°£¿°Ç×Ã¼','°øÅë',5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'°¨¿°°Ë»ç°á°ú','°øÅë',3.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2024/09/15',3,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',5.3,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì‹ ìž¥','ê³µí†µ',175,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì²´ì¤‘','ê³µí†µ',65,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',70,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',21.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì‹œë ¥(ìš°)','ê³µí†µ',1.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',120,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì²­ë ¥(ìš°)','ê³µí†µ',110,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'í˜ˆì••','ê³µí†µ',140,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ìš”ë‹¨ë°±','ê³µí†µ',30,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'í˜ˆìƒ‰ì†Œ','ë‚¨',16.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',155,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',62,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',111,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'AST(SGOT)','ê³µí†µ',45,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ALT(SGPT)','ê³µí†µ',40,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',34,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',4.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',3.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2022/11/25',3,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',2.3,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'½ÅÀå','°øÅë',175,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ã¼Áß','°øÅë',70,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Çã¸®µÑ·¹','³²',75,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ã¼Áú·®Áö¼ö','°øÅë',20.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'½Ã·Â(ÁÂ)','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'½Ã·Â(¿ì)','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ã»·Â(ÁÂ)','°øÅë',140,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ã»·Â(¿ì)','°øÅë',120,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ç÷¾Ð','°øÅë',113,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'¿ä´Ü¹é','°øÅë',90,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ç÷»ö¼Ò','³²',18,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'½ÄÀüÇ÷´ç','°øÅë',132,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',165,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',92,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',161,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',132,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',0.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'AST(SGOT)','°øÅë',39,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'ALT(SGPT)','°øÅë',35,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',76,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'BÇü°£¿°Ç×¿ø','°øÅë',3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'BÇü°£¿°Ç×Ã¼','°øÅë',5.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'°¨¿°°Ë»ç°á°ú','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2025/12/15',3,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',6.3,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì‹ ìž¥','ê³µí†µ',175,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì²´ì¤‘','ê³µí†µ',68,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',72,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',21.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì‹œë ¥(ìš°)','ê³µí†µ',1.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',125,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì²­ë ¥(ìš°)','ê³µí†µ',112,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'í˜ˆì••','ê³µí†µ',145,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ìš”ë‹¨ë°±','ê³µí†µ',60,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'í˜ˆìƒ‰ì†Œ','ë‚¨',20,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',120,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',112,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',62,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',111,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',1.9,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'AST(SGOT)','ê³µí†µ',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ALT(SGPT)','ê³µí†µ',20,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',63,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',9,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.1,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',8.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2023/09/25',3,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',2.1,NULL);
 
 
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'½ÅÀå','°øÅë',175,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ã¼Áß','°øÅë',64,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Çã¸®µÑ·¹','³²',71,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ã¼Áú·®Áö¼ö','°øÅë',18.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'½Ã·Â(ÁÂ)','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'½Ã·Â(¿ì)','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ã»·Â(ÁÂ)','°øÅë',116,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ã»·Â(¿ì)','°øÅë',150,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ç÷¾Ð','°øÅë',131,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'¿ä´Ü¹é','°øÅë',95,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ç÷»ö¼Ò','³²',14.2,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'½ÄÀüÇ÷´ç','°øÅë',80,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'ÃÑÄÝ·¹½ºÅ×·Ñ','°øÅë',135,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'HDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',132,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Æ®¸®±Û¸®¼¼¶óÀÌµå','°øÅë',123,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'LDL-ÄÝ·¹½ºÅ×·Ñ','°øÅë',45,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'Ç÷Ã»Å©·¹¾ÆÆ¼´Ñ','°øÅë',0.6,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'AST(SGOT)','°øÅë',50,'1');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'ALT(SGPT)','°øÅë',35,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'°¨¸¶ÁöÆ¼ÇÇ(y-GTP)','³²',32,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'BÇü°£¿°Ç×¿ø','°øÅë',3.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'BÇü°£¿°Ç×Ã¼','°øÅë',2.3,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'°¨¿°°Ë»ç°á°ú','°øÅë',1.5,'0');
-INSERT INTO È¸¿ø¼öÄ¡ VALUES('2026/12/23',3,'ÈäºÎ¹æ»ç¼±°Ë»ç','°øÅë',6.3,'0');
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì‹ ìž¥','ê³µí†µ',175,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì²´ì¤‘','ê³µí†µ',63,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',68,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',17,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì‹œë ¥(ìš°)','ê³µí†µ',1.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',133,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì²­ë ¥(ìš°)','ê³µí†µ',118,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'í˜ˆì••','ê³µí†µ',110,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ìš”ë‹¨ë°±','ê³µí†µ',30,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'í˜ˆìƒ‰ì†Œ','ë‚¨',13,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',81,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',89,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',62,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',111,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',91,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',0.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'AST(SGOT)','ê³µí†µ',29,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ALT(SGPT)','ê³µí†µ',20,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',63,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',3.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2024/09/15',3,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',5.3,NULL);
 
 
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì‹ ìž¥','ê³µí†µ',175,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì²´ì¤‘','ê³µí†µ',70,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',75,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',20.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì‹œë ¥(ìš°)','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',140,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì²­ë ¥(ìš°)','ê³µí†µ',120,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'í˜ˆì••','ê³µí†µ',113,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ìš”ë‹¨ë°±','ê³µí†µ',90,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'í˜ˆìƒ‰ì†Œ','ë‚¨',18,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',132,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',165,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',92,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',161,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',132,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',0.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'AST(SGOT)','ê³µí†µ',39,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ALT(SGPT)','ê³µí†µ',35,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',76,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',5.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2025/12/15',3,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',6.3,NULL);
+
+
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì‹ ìž¥','ê³µí†µ',175,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì²´ì¤‘','ê³µí†µ',64,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'í—ˆë¦¬ë‘˜ë ˆ','ë‚¨',71,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì²´ì§ˆëŸ‰ì§€ìˆ˜','ê³µí†µ',18.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì‹œë ¥(ì¢Œ)','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì‹œë ¥(ìš°)','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì²­ë ¥(ì¢Œ)','ê³µí†µ',116,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì²­ë ¥(ìš°)','ê³µí†µ',150,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'í˜ˆì••','ê³µí†µ',131,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ìš”ë‹¨ë°±','ê³µí†µ',95,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'í˜ˆìƒ‰ì†Œ','ë‚¨',14.2,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì‹ì „í˜ˆë‹¹','ê³µí†µ',80,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ì´ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',135,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'HDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',132,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'íŠ¸ë¦¬ê¸€ë¦¬ì„¸ë¼ì´ë“œ','ê³µí†µ',123,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'LDL-ì½œë ˆìŠ¤í…Œë¡¤','ê³µí†µ',45,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'í˜ˆì²­í¬ë ˆì•„í‹°ë‹Œ','ê³µí†µ',0.6,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'AST(SGOT)','ê³µí†µ',50,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ALT(SGPT)','ê³µí†µ',35,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ê°ë§ˆì§€í‹°í”¼(y-GTP)','ë‚¨',32,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'Bí˜•ê°„ì—¼í•­ì›','ê³µí†µ',3.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'Bí˜•ê°„ì—¼í•­ì²´','ê³µí†µ',2.3,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'ê°ì—¼ê²€ì‚¬ê²°ê³¼','ê³µí†µ',1.5,NULL);
+INSERT INTO íšŒì›ìˆ˜ì¹˜ VALUES('2026/12/23',3,'í‰ë¶€ë°©ì‚¬ì„ ê²€ì‚¬','ê³µí†µ',6.3,NULL);
 
 
 COMMIT;
-
-
