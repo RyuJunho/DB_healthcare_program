@@ -1,4 +1,4 @@
-package db_project;
+package UI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6,6 +6,9 @@ import java.sql.DriverManager;
 
 import javax.swing.*;
 import org.knowm.xchart.*;
+
+import DB.DB_Conn_Query;
+
 import java.sql.*;
 
 public class main_UI extends JFrame {
@@ -14,29 +17,12 @@ public class main_UI extends JFrame {
 	private String user_id = "1";
 	private String user_pw = "1111";
 	
+	DB_Conn_Query db = new DB_Conn_Query();
 
 	//생성자
-	public main_UI(String user_id, String user_pw) {
-		this.user_id = user_id;
+	public main_UI(String id, String user_pw) {
+		this.user_id = id;
 		this.user_pw = user_pw;
-		
-		
-		//데이터베이스 연결
-		String url = "jdbc:oracle:thin:@localhost:1521:XE";
-		String id = "PROJECT";
-		String pw = "1234qwer";
-		Connection con = null;
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("드라이버 적재 성공");
-			con = DriverManager.getConnection(url, id, pw);
-			System.out.println("데이터베이스 연결 성공");
-		}catch(ClassNotFoundException e) {
-			System.out.println("드라이버를 찾을 수 없음");
-		}catch(SQLException e) {
-			System.out.println("연결에 실패");
-		}
-
 
 		Container c = getContentPane();	// 컨텐트팬 추출
 		c.setLayout(null);		// 배치관리자 제거
@@ -63,11 +49,11 @@ public class main_UI extends JFrame {
 		String sex = "";				// 성별
 		
 		try {
-			Statement stmt = con.createStatement();
 			// 쿼리문
-			ResultSet rs = stmt.executeQuery("select 이름,주민등록번호,성별 from 회원 "
-					+ "where ID = " + user_id
-					+ "and PW = " + user_pw);
+			String sql = "select 이름,주민등록번호,성별 from 회원 "
+					+ "where ID = " + id
+					+ " and PW = " + user_pw;
+			ResultSet rs = db.executeQuery(sql);
 			
 			// 결과를 변수에 저장
 			while(rs.next()) {

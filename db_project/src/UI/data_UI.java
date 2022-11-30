@@ -1,36 +1,20 @@
-package db_project;
+package UI;
 
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
+
+import DB.DB_Conn_Query;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class data_UI extends JFrame{
-	
-	Connection con = null;
-	
-	public void DB_Connect() {
-		//데이터베이스 연결
-		String url = "jdbc:oracle:thin:@localhost:1521:XE";
-		String id = "PROJECT";
-		String pw = "1234qwer";
-		//Connection con = null;
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("드라이버 적재 성공");
-			con = DriverManager.getConnection(url, id, pw);
-			System.out.println("데이터베이스 연결 성공");
-		}catch(ClassNotFoundException e) {
-			System.out.println("드라이버를 찾을 수 없음");
-		}catch(SQLException e) {
-			System.out.println("연결에 실패");
-		}
-	}
+	DB_Conn_Query db = new DB_Conn_Query();
 	
 	//생성자
 	public data_UI(String user_id, String user_pw) {
@@ -54,16 +38,13 @@ public class data_UI extends JFrame{
 
 		// 회원테이블(JTable)에 데이터 삽입
 		try {
-			DB_Connect();	//DB 접속
-			System.out.println("테이블 데이터 삽입");
-			
-			Statement stmt = con.createStatement();
 			// 쿼리문
-			ResultSet rs = stmt.executeQuery("SELECT 회원수치.검사날짜, 질환.검진항목, 질환.질환명, 질환.조사항목, 회원수치.수치값 "
+			String sql = "SELECT 회원수치.검사날짜, 질환.검진항목, 질환.질환명, 질환.조사항목, 회원수치.수치값 "
 					+"FROM 질환,회원수치 "
 					+"WHERE 질환.조사항목 = 회원수치.조사항목 AND "
 					+"질환.성별값 = 회원수치.성별값 AND "
-					+"회원수치.ID = " + user_id);
+					+"회원수치.ID = " + user_id;
+			ResultSet rs = db.executeQuery(sql);
 			// 결과를 변수에 저장
 			while(rs.next()) {
 				String row[] = new String[5];
@@ -75,8 +56,6 @@ public class data_UI extends JFrame{
 
 				model.addRow(row);		//JTable 에 한줄 삽입
 			}
-	
-			con.close();	//DB 연결 해제
 		}catch(SQLException e2){ System.out.println("데이터 삽입 실패");}
 	
 		c.add(data_table_pan);
@@ -189,14 +168,13 @@ public class data_UI extends JFrame{
 				System.out.println(date);	
 				try {
 					// 해달 날짜의 회원 수치 검색
-					DB_Connect();	// DB연결
 					System.out.println("클릭한 열의 날짜에 해당하는 데이터 출력");
 					
-					Statement stmt = con.createStatement();
 					// 쿼리문
-					ResultSet rs = stmt.executeQuery("SELECT 조사항목, 수치값 FROM 회원수치 "
+					String sql = "SELECT 조사항목, 수치값 FROM 회원수치 "
 							+ "WHERE 검사날짜 = " + date
-							+ " ORDER BY 조사항목 ASC");
+							+ " ORDER BY 조사항목 ASC";
+					ResultSet rs = db.executeQuery(sql);
 					
 					// 결과를 변수에 저장
 					while(rs.next()) {
@@ -204,7 +182,6 @@ public class data_UI extends JFrame{
 							String B = rs.getString(2);
 							System.out.println(A);
 							System.out.println(B);
-
 					}
 				}catch(SQLException e2) {System.out.println("데이터 출력 실패");}
 				
@@ -219,14 +196,12 @@ public class data_UI extends JFrame{
 		registration_btn.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 				try {
-					
-					DB_Connect();	//DB 접속
-					
 					System.out.println("등록버튼 클릭");
 					
 					
 					//값 insert
 					// 수정 필요
+					Connection con = db.getConnection();
 					PreparedStatement pstmt = con.prepareStatement("insert into 회원수치 values(?,?,?,?,?,?)");
 					
 					LocalDate date = LocalDate.now();
@@ -257,11 +232,11 @@ public class data_UI extends JFrame{
 		correction_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					DB_Connect();	//DB 접속
 					
 					System.out.println("수정버튼 클릭");
 					
 					//값 수정
+					Connection con = db.getConnection();
 					PreparedStatement pstmt = con.prepareStatement("update 회원수치 set 수치값 = 99 where ID = 1 and 조사항목 = '혈압'");
 
 					pstmt.executeUpdate();
@@ -280,10 +255,8 @@ public class data_UI extends JFrame{
 		delete_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					DB_Connect();	//DB 접속
-					
 					System.out.println("삭제버튼 클릭");
-					
+					Connection con = db.getConnection();
 					//값 수정
 					PreparedStatement pstmt = con.prepareStatement("update 회원수치 set 수치값 = 99 where ID = 1 and 조사항목 = '혈압'");
 
