@@ -52,13 +52,10 @@ public class data_UI extends JFrame{
 		JScrollPane data_table_pan = new JScrollPane(data_table);
 		data_table_pan.setBounds(10,50,460,550);
 
-		
+		// 회원테이블(JTable)에 데이터 삽입
 		try {
-			
 			DB_Connect();	//DB 접속
-			
 			System.out.println("테이블 데이터 삽입");
-			
 			
 			Statement stmt = con.createStatement();
 			// 쿼리문
@@ -67,7 +64,6 @@ public class data_UI extends JFrame{
 					+"WHERE 질환.조사항목 = 회원수치.조사항목 AND "
 					+"질환.성별값 = 회원수치.성별값 AND "
 					+"회원수치.ID = " + user_id);
-			
 			// 결과를 변수에 저장
 			while(rs.next()) {
 				String row[] = new String[5];
@@ -77,9 +73,9 @@ public class data_UI extends JFrame{
 				row[3] = rs.getString(4);
 				row[4] = rs.getString(5);
 
-				model.addRow(row);
+				model.addRow(row);		//JTable 에 한줄 삽입
 			}
-			
+	
 			con.close();	//DB 연결 해제
 		}catch(SQLException e2){ System.out.println("데이터 삽입 실패");}
 	
@@ -183,6 +179,37 @@ public class data_UI extends JFrame{
 		chest_radiograph.setBounds(1000,420,500,80);
 		add(chest_radiograph);
 		
+		
+		// 회원테이블(JTable) 클릭 시
+		data_table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				// 클릭한 열의 날짜 가져옴
+				String date = data_table.getValueAt(data_table.getSelectedRow(),0).toString();
+				date = date.substring(0,10);
+				System.out.println(date);	
+				try {
+					// 해달 날짜의 회원 수치 검색
+					DB_Connect();	// DB연결
+					System.out.println("클릭한 열의 날짜에 해당하는 데이터 출력");
+					
+					Statement stmt = con.createStatement();
+					// 쿼리문
+					ResultSet rs = stmt.executeQuery("SELECT 조사항목, 수치값 FROM 회원수치 "
+							+ "WHERE 검사날짜 = " + date
+							+ " ORDER BY 조사항목 ASC");
+					
+					// 결과를 변수에 저장
+					while(rs.next()) {
+							String A = rs.getString(1);
+							String B = rs.getString(2);
+							System.out.println(A);
+							System.out.println(B);
+
+					}
+				}catch(SQLException e2) {System.out.println("데이터 출력 실패");}
+				
+			}
+		});
 		
 		//등록 버튼
 		JButton registration_btn = new JButton("등록");
