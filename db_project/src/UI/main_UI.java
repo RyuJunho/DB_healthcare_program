@@ -14,15 +14,15 @@ import java.sql.*;
 public class main_UI extends JFrame {
 	private String [] disease = {"비만","고혈압","간 기능 이상","당뇨병","이상지질 혈증"};
 	private String [] checkup = {""};
-	private String user_id = "1";
-	private String user_pw = "1111";
+	private String user_id;
+	private String user_pw;
 	
 	DB_Conn_Query db = new DB_Conn_Query();
 
 	//생성자
-	public main_UI(String id, String user_pw) {
+	public main_UI(String id, String pw) {
 		this.user_id = id;
-		this.user_pw = user_pw;
+		this.user_pw = pw;
 
 		Container c = getContentPane();	// 컨텐트팬 추출
 		c.setLayout(null);		// 배치관리자 제거
@@ -100,10 +100,10 @@ public class main_UI extends JFrame {
 		JButton data_btn = new JButton("건강검진 데이터 관리");
 		data_btn.setBounds(30,700,200,40);
 		c.add(data_btn);
-		//로그인 버튼 클릭시 이벤트
+		//건강검진 데이터 관리 버튼 클릭시 이벤트
 		data_btn.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				data_UI data = new data_UI("1","1111");		//회원 데이터 화면 생성
+				data_UI data = new data_UI(id);		//회원 데이터 화면 생성
 				data.setVisible(true);
 			}
 		});
@@ -142,13 +142,6 @@ public class main_UI extends JFrame {
 			
 			setBackground(Color.WHITE);
 		}
-	}
-	
-	
-	
-	public static void main(String[] args) {
-		// 로그인 화면 생성
-		main_UI main = new main_UI("1","1111");
 	}
 
 }

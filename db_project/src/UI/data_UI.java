@@ -17,7 +17,7 @@ public class data_UI extends JFrame{
 	DB_Conn_Query db = new DB_Conn_Query();
 	
 	//생성자
-	public data_UI(String user_id, String user_pw) {
+	public data_UI(String id) {
 	
 		
 		Container c = getContentPane();	// 컨텐트팬 추출
@@ -43,7 +43,7 @@ public class data_UI extends JFrame{
 					+"FROM 질환,회원수치 "
 					+"WHERE 질환.조사항목 = 회원수치.조사항목 AND "
 					+"질환.성별값 = 회원수치.성별값 AND "
-					+"회원수치.ID = " + user_id;
+					+"회원수치.ID = " + id;
 			ResultSet rs = db.executeQuery(sql);
 			// 결과를 변수에 저장
 			while(rs.next()) {
@@ -289,11 +289,6 @@ public class data_UI extends JFrame{
 			JTextField text_tf = new JTextField(20);
 			add(text_tf);
 		}
-	}
-	
-	public static void main(String[] args) {
-		// 로그인 화면 생성
-		data_UI data = new data_UI("1","1111");
 	}
 
 }

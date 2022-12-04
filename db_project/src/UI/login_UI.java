@@ -68,7 +68,7 @@ public class login_UI extends JFrame{
 				LoginSystem login = new LoginSystem();
 				if(login.LoginSystem(id,pw)) {
 					JOptionPane.showMessageDialog(null,"로그인 성공");
-					main_UI main = new main_UI(id, pw);		//메인 화면 생성
+					mainUI main = new mainUI(id);		//메인 화면 생성
 					main.setVisible(true);
 					setVisible(false);					//로그인창 닫음
 				}
