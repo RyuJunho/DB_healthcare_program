@@ -104,8 +104,15 @@ public class mainUI extends JFrame {
 		
 		examinationBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//조사항목이 선택되면 차트 업데이트
+				//조사항목이 선택되면 차트 업데이트, 수치 평균 출력
 				System.out.println("조사항목 선택됨");
+				String checkUp = checkUpBox.getSelectedItem().toString();
+				String disease = diseaseBox.getSelectedItem().toString();
+				String examination = examinationBox.getSelectedItem().toString();
+				System.out.println("검진항목 : " + checkUp);
+				System.out.println("질환명 : " + disease);
+				System.out.println("조사항목 : " + examination);
+				//평균 : 아이디가 같고, 조사항목이 같고, 날짜가 다른 회원수치들의 평균
 				
 			}
 		});
@@ -168,8 +175,21 @@ public class mainUI extends JFrame {
 		lblNewLabel_2.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 		lblNewLabel_2.setBounds(35, 10, 280, 52);
 		getContentPane().add(lblNewLabel_2);
-		
+		//--------------------------회원 탈퇴 이벤트----------------------------------
 		JButton dropBtn = new JButton("회원 탈퇴");
+		dropBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int answer = JOptionPane.showConfirmDialog(null, "탈퇴하시겠습니까?", "회원 탈퇴",JOptionPane.YES_NO_OPTION );
+				if(answer == 0) {	//회원 탈퇴
+					String sql = "DELETE FROM 회원 WHERE ID = "+id;
+					db.executeUpdate(sql);
+					setVisible(false);
+					new login_UI();
+				}
+			}
+		});
+		//----------------------------------------------------------------------
 		dropBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		dropBtn.setBounds(932, 25, 107, 31);
 		getContentPane().add(dropBtn);
