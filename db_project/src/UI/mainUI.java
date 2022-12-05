@@ -139,7 +139,7 @@ public class mainUI extends JFrame {
 				String checkUp = checkUpBox.getSelectedItem().toString();
 				String disease = diseaseBox.getSelectedItem().toString();
 				String examination = examinationBox.getSelectedItem().toString();
-				//평균 : 아이디가 같고, 조사항목이 같고, 날짜가 다른 회원수치들의 평균
+				//평균 구하기
 				try {
 					CallableStatement cstmt = db.getConnection().prepareCall("{call User_avg(?,?,?)}");
 					cstmt.setInt(1, Integer.parseInt(id));
@@ -207,6 +207,7 @@ public class mainUI extends JFrame {
 				if(answer == 0) {	//회원 탈퇴
 					String sql = "DELETE FROM 회원 WHERE ID = "+id;
 					db.executeUpdate(sql);
+					JOptionPane.showMessageDialog(null,"회원 탈퇴가 완료되었습니다.");
 					setVisible(false);
 					new login_UI();
 				}
