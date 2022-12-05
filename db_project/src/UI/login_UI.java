@@ -55,7 +55,7 @@ public class login_UI extends JFrame{
 		getContentPane().add(idTextField);
 		idTextField.setColumns(10);
 		
-		pwTextField = new JTextField();
+		pwTextField = new JPasswordField();
 		pwTextField.setColumns(10);
 		pwTextField.setBounds(127, 140, 193, 21);
 		getContentPane().add(pwTextField);
