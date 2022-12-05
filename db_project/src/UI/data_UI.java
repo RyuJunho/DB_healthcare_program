@@ -23,7 +23,7 @@ public class data_UI extends JFrame{
 	String [] checkup = {"ALT","AST","B형간염항원","B형간염항체","HDL-콜레스테롤","LDL-콜레스테롤","감마지티피","감염검사경과","시력 (우)","시력 (좌)","식전혈당","신장",
 			"요단백","청력 (좌)","청력 (우)","체중","체질량지수","총콜레스테롤","트리글리세라이드","허리둘레","혈색소","혈압","혈청크레아티닌","흉부방사선검사"};
 	//생성자
-	public data_UI(String user_id, String user_pw) {
+	public data_UI(String user_id) {
 	
 		
 		Container c = getContentPane();	// 컨텐트팬 추출
@@ -182,7 +182,7 @@ public class data_UI extends JFrame{
 
 	public static void main(String[] args) {
 		// 로그인 화면 생성
-		data_UI data = new data_UI("1","1111");
+		data_UI data = new data_UI("1");
 	}
 
 }
