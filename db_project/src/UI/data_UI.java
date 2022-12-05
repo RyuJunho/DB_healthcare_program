@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import DB.DB_Conn_Query;
+import Control.DataSystem;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -14,10 +15,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class data_UI extends JFrame{
-	DB_Conn_Query db = new DB_Conn_Query();
+	DB_Conn_Query db = new DB_Conn_Query();		// DB 클래스
+	DataSystem Data = new DataSystem();			// Control 클래스
 	
+	JTextField tf_arr[] = new JTextField[25];	// 들어갈 값은 조사항목 오름차순
+	JLabel lb_arr[] = new JLabel[25];
+	String [] checkup = {"ALT","AST","B형간염항원","B형간염항체","HDL-콜레스테롤","LDL-콜레스테롤","감마지티피","감염검사경과","시력 (우)","시력 (좌)","식전혈당","신장",
+			"요단백","청력 (좌)","청력 (우)","체중","체질량지수","총콜레스테롤","트리글리세라이드","허리둘레","혈색소","혈압","혈청크레아티닌","흉부방사선검사"};
 	//생성자
-	public data_UI(String id) {
+	public data_UI(String user_id, String user_pw) {
 	
 		
 		Container c = getContentPane();	// 컨텐트팬 추출
@@ -43,7 +49,9 @@ public class data_UI extends JFrame{
 					+"FROM 질환,회원수치 "
 					+"WHERE 질환.조사항목 = 회원수치.조사항목 AND "
 					+"질환.성별값 = 회원수치.성별값 AND "
-					+"회원수치.ID = " + id;
+					+"회원수치.ID = " + user_id
+					+" ORDER BY 검사날짜 ASC, 조사항목 ASC";
+			
 			ResultSet rs = db.executeQuery(sql);
 			// 결과를 변수에 저장
 			while(rs.next()) {
@@ -60,103 +68,27 @@ public class data_UI extends JFrame{
 	
 		c.add(data_table_pan);
 		
-		
-		
+			
 		//데이터 입력 문구
 		JLabel registration_lb = new JLabel("데이터를 입력하세요");
 		registration_lb.setBounds(900,10,200,20);
-		add(registration_lb);
-		
-		
-		//데이터 입력창
-		//신장 입력창
-		input_Panel height = new input_Panel("신장");
-		height.setBounds(500,20,500,80);
-		add(height);
-		//체중 입력창
-		input_Panel weight = new input_Panel("체중");
-		weight.setBounds(500,60,500,80);
-		add(weight);
-		//허리둘레 입력창
-		input_Panel waist = new input_Panel("허리둘레");
-		waist.setBounds(500,100,500,80);
-		add(waist);
-		//체질량지수 입력창
-		input_Panel bmi = new input_Panel("체질량지수");
-		bmi.setBounds(500,140,500,80);
-		add(bmi);
-		//시력(좌) 입력창
-		input_Panel vision_left = new input_Panel("시력 (좌)");
-		vision_left.setBounds(500,180,500,80);
-		add(vision_left);
-		//시력(우) 입력
-		input_Panel vision_right = new input_Panel("시력 (우)");
-		vision_right.setBounds(500,220,500,80);
-		add(vision_right);
-		//청력(좌) 입력
-		input_Panel hearing_left = new input_Panel("청력 (좌)");
-		hearing_left.setBounds(500,260,500,80);
-		add(hearing_left);
-		//청력(우) 입력
-		input_Panel hearing_right = new input_Panel("청력 (우)");
-		hearing_right.setBounds(500,300,500,80);
-		add(hearing_right);
-		//혈압 입력
-		input_Panel Blood_pressure = new input_Panel("혈압");
-		Blood_pressure.setBounds(500,340,500,80);
-		add(Blood_pressure);
-		//요단백 입력
-		input_Panel urine_protein = new input_Panel("요단백");
-		urine_protein.setBounds(500,380,500,80);
-		add(urine_protein);
-		//혈색소 입력
-		input_Panel hemoglobin = new input_Panel("혈색소");
-		hemoglobin.setBounds(500,420,500,80);
-		add(hemoglobin);
-		//식전혈당 입력
-		input_Panel blood_sugar = new input_Panel("식전혈당");
-		blood_sugar.setBounds(1000, 20,500,80);
-		add(blood_sugar);
-		//총콜레스테롤 입력
-		input_Panel total_cholesterol = new input_Panel("총콜레스테롤");
-		total_cholesterol.setBounds(1000,60,500,80);
-		add(total_cholesterol);
-		//HDL-콜레스테롤 입력
-		input_Panel HDL = new input_Panel("HDL-콜레스테롤");
-		HDL.setBounds(1000,100,500,80);
-		add(HDL);
-		//트리글리세라이드 입력
-		input_Panel ldl = new input_Panel("트리글리세라이드");
-		ldl.setBounds(1000,140,500,80);
-		add(ldl);
-		//LDL-콜레스테롤 입력
-		input_Panel LDL = new input_Panel("LDL-콜레스테롤");
-		LDL.setBounds(1000,180,500,80);
-		add(LDL);
-		//혈청크레아티닌 입력
-		input_Panel serum_creatinine = new input_Panel("혈청크레아티닌");
-		serum_creatinine.setBounds(1000,220,500,80);
-		add(serum_creatinine);
-		//AST 입력
-		input_Panel AST = new input_Panel("AST");
-		AST.setBounds(1000,260,500,80);
-		add(AST);
-		//감마지티피 입력
-		input_Panel Y_GTP = new input_Panel("감마지티피");
-		Y_GTP.setBounds(1000,300,500,80);
-		add(Y_GTP);
-		//B형간염항원 입력
-		input_Panel hepatitis_B_antigen = new input_Panel("B형간염항원");
-		hepatitis_B_antigen.setBounds(1000,340,500,80);
-		add(hepatitis_B_antigen);
-		//감염검사결과 입력
-		input_Panel hepatitis_result = new input_Panel("감염검사경과");
-		hepatitis_result.setBounds(1000,380,500,80);
-		add(hepatitis_result);
-		//흉부방사선검사 입력
-		input_Panel chest_radiograph = new input_Panel("흉부방사선검사");
-		chest_radiograph.setBounds(1000,420,500,80);
-		add(chest_radiograph);
+		c.add(registration_lb);
+
+		// 입력창 레이블, 텍스트필드 배열 배치
+		for (int i=0;i<24;i++) {
+			lb_arr[i] = new JLabel(checkup[i]);
+			tf_arr[i] = new JTextField();
+			if (i < 12) { 
+				lb_arr[i].setBounds(600,20 + (i*40),500,80);
+				tf_arr[i].setBounds(700,50 + (i*40) ,170,20); 
+			}
+			else { 
+				lb_arr[i].setBounds(1000,20 + (i-12)*40,500,80);
+				tf_arr[i].setBounds(1100,50 + (i-12)*40 ,170,20); 
+			}
+			c.add(lb_arr[i]);
+			c.add(tf_arr[i]);
+		}
 		
 		
 		// 회원테이블(JTable) 클릭 시
@@ -164,113 +96,82 @@ public class data_UI extends JFrame{
 			public void mouseClicked(MouseEvent e) {
 				// 클릭한 열의 날짜 가져옴
 				String date = data_table.getValueAt(data_table.getSelectedRow(),0).toString();
-				date = date.substring(0,10);
-				System.out.println(date);	
-				try {
-					// 해달 날짜의 회원 수치 검색
-					System.out.println("클릭한 열의 날짜에 해당하는 데이터 출력");
-					
-					// 쿼리문
-					String sql = "SELECT 조사항목, 수치값 FROM 회원수치 "
-							+ "WHERE 검사날짜 = " + date
-							+ " ORDER BY 조사항목 ASC";
-					ResultSet rs = db.executeQuery(sql);
-					
-					// 결과를 변수에 저장
-					while(rs.next()) {
-							String A = rs.getString(1);
-							String B = rs.getString(2);
-							System.out.println(A);
-							System.out.println(B);
-					}
-				}catch(SQLException e2) {System.out.println("데이터 출력 실패");}
+				date = date.substring(2,10).replaceAll("-","");		// ex) "221202"
 				
+				// 날짜에 해당하는 회원수치 데이터 가져옴 (문자열 배열을 반환받음)
+				String[] data_arr = new String[25];
+				Data.GetTableData(date, user_id, data_arr);
+				
+				// 텍스트필드에 값 채우기
+				for (int i=0;i<24;i++) { tf_arr[i].setText(data_arr[i]); }		
 			}
 		});
 		
 		//등록 버튼
 		JButton registration_btn = new JButton("등록");
-		registration_btn.setBounds(900,550,60,30);
+		registration_btn.setBounds(800,550,60,30);
 		c.add(registration_btn);
 		// 등록 버튼 클릭 시
 		registration_btn.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-				try {
-					System.out.println("등록버튼 클릭");
-					
-					
-					//값 insert
-					// 수정 필요
-					Connection con = db.getConnection();
-					PreparedStatement pstmt = con.prepareStatement("insert into 회원수치 values(?,?,?,?,?,?)");
-					
-					LocalDate date = LocalDate.now();
-				    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
-				    
-				    String a= date.format(formatter);
-				    
-					pstmt.setString(1, a);
-					pstmt.setInt(2, 1);
-					pstmt.setString(3, "조사항목");
-					pstmt.setString(4, "성별값");
-					pstmt.setInt(5, 999);
-					pstmt.setString(6, "0");
-					
-					
-					pstmt.executeUpdate();
-					
-					con.close();	//DB 연결 해제
-				}catch(SQLException e2){ System.out.println("등록 실패");}
+				System.out.println("등록버튼 클릭");
+				
+				boolean flag = true;
+				// 비어있는 텍스트필드가 있으면
+				for (int i=0;i<24;i++) {
+					if (tf_arr[i].getText().equals("")) {
+						flag = false;
+						break;
+					}		
+				}
+				
+				if (flag) {
+					//회원수치 등록
+					// 멈춰버림
+					for (int i=0;i<24;i++) {
+						Data.RegistrationData(Integer.parseInt(user_id),lb_arr[i].getText(),Integer.parseInt(tf_arr[i].getText()));
+					}
+				
+				}
 			}
 		});
 				
 		//수정 버튼
 		JButton correction_btn = new JButton("수정");
-		correction_btn.setBounds(1000,550,60,30);
+		correction_btn.setBounds(900,550,60,30);
 		c.add(correction_btn);
 		// 수정 버튼 클릭 시
 		correction_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+				System.out.println("수정버튼 클릭");
 					
-					System.out.println("수정버튼 클릭");
-					
-					//값 수정
-					Connection con = db.getConnection();
-					PreparedStatement pstmt = con.prepareStatement("update 회원수치 set 수치값 = 99 where ID = 1 and 조사항목 = '혈압'");
-
-					pstmt.executeUpdate();
-					
-					con.close();	//DB 연결 해제
-				}catch(SQLException e2) {System.out.println("수정 실패");}
+				//회원수치 수정
+				Data.CorrectionData();
 			}
-			
 		});
 		
 		//삭제 버튼
 		JButton delete_btn = new JButton("삭제");
-		delete_btn.setBounds(1100,550,60,30);
+		delete_btn.setBounds(1000,550,60,30);
 		c.add(delete_btn);
 		// 삭제 버튼 클릭 시
 		delete_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					System.out.println("삭제버튼 클릭");
-					Connection con = db.getConnection();
-					//값 수정
-					PreparedStatement pstmt = con.prepareStatement("update 회원수치 set 수치값 = 99 where ID = 1 and 조사항목 = '혈압'");
-
-					pstmt.executeUpdate();
-					
-					con.close();	//DB 연결 해제
-				}catch(SQLException e2) {System.out.println("수정 실패");}
+				System.out.println("삭제버튼 클릭");
+				
+				// 클릭한 열의 날짜 가져옴
+				String date = data_table.getValueAt(data_table.getSelectedRow(),0).toString();
+				date = date.substring(2,10).replaceAll("-","");		// ex) "221202"
+				
+				// 회원수치 삭제
+				Data.DeleteData(Integer.parseInt(user_id), date);
 			}
 		});
 		
 		
 		//화면 설정
 		setTitle("회원 데이터 화면");		// 타이틀
-		setSize(1800,700);				//사이즈
+		setSize(1500,700);				//사이즈
 		setLocationRelativeTo(null);	//화면 중앙 배치
 		setResizable(false);			// 화면 사이즈 고정
 		setVisible(true);				//화면 출력
@@ -279,16 +180,9 @@ public class data_UI extends JFrame{
 	}
 	
 
-	// 입력창 패널
-	class input_Panel extends JPanel {
-		public input_Panel(String text) {
-			setLayout(new FlowLayout(FlowLayout.CENTER, 30, 40));
-	
-			JLabel text_lb = new JLabel(text.concat(" : "));
-			add(text_lb);
-			JTextField text_tf = new JTextField(20);
-			add(text_tf);
-		}
+	public static void main(String[] args) {
+		// 로그인 화면 생성
+		data_UI data = new data_UI("1","1111");
 	}
 
 }
