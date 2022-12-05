@@ -2,12 +2,18 @@ package UI;
 
 import javax.swing.*;
 
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.XYChart;
+
 import Control.ComboBoxData;
 import DB.DB_Conn_Query;
 
 import java.awt.*;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +23,12 @@ public class mainUI extends JFrame {
 	JComboBox checkUpBox;
 	JComboBox diseaseBox;
 	JComboBox examinationBox;
+	
+	String name;				// 이름
+	String person_number;		// 주민등록번호
+	String sex;				// 성별
+	float avg;
+	
 	public mainUI(String id) {
 		setTitle("Main");
 		getContentPane().setLayout(null);
@@ -42,9 +54,6 @@ public class mainUI extends JFrame {
 		lblNewLabel_3_2.setBounds(12, 88, 127, 29);
 		userInfoPanel.add(lblNewLabel_3_2);
 		//------------------------회원 정보 가져오기-------------------------------
-		String name = "";				// 이름
-		String person_number = "";		// 주민등록번호
-		String sex = "";				// 성별
 		String sql = "SELECT 이름, 주민등록번호, 성별 FROM 회원 WHERE ID = "+id;
 		ResultSet rs = db.executeQuery(sql);
 		try {
@@ -69,12 +78,34 @@ public class mainUI extends JFrame {
 		sexLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		sexLabel.setBounds(102, 88, 170, 29);
 		userInfoPanel.add(sexLabel);
+		
+		
+		
 		//--------------------------회원 정보 가져오기 end---------------------------
 		JPanel graphPanel = new JPanel();
 		graphPanel.setBackground(SystemColor.inactiveCaptionBorder);
 		graphPanel.setBounds(455, 96, 700, 483);
 		getContentPane().add(graphPanel);
 		graphPanel.setLayout(null);
+		//chart
+		/*double[] xData = new double[] {0.0, 1.0, 2.0};
+		double[] yData = new double[] {2.0, 1.0, 0.0}; 
+		XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+
+		//그래프 패널
+		getContentPane().add(new XChartPanel(chart));*/
+		
+		JLabel avgValueLabel = new JLabel("0");
+		avgValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		avgValueLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		avgValueLabel.setBounds(528, 451, 127, 22);
+		graphPanel.add(avgValueLabel);
+		
+		JLabel avgLabel = new JLabel("수치 평균");
+		avgLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		avgLabel.setBounds(528, 421, 127, 29);
+		graphPanel.add(avgLabel);
+		
 		//-------------------------콤보박스 데이터 가져오기--------------------------------
 		ComboBoxData combo = new ComboBoxData();
 		
@@ -105,25 +136,32 @@ public class mainUI extends JFrame {
 		examinationBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//조사항목이 선택되면 차트 업데이트, 수치 평균 출력
-				System.out.println("조사항목 선택됨");
 				String checkUp = checkUpBox.getSelectedItem().toString();
 				String disease = diseaseBox.getSelectedItem().toString();
 				String examination = examinationBox.getSelectedItem().toString();
-				System.out.println("검진항목 : " + checkUp);
-				System.out.println("질환명 : " + disease);
-				System.out.println("조사항목 : " + examination);
 				//평균 : 아이디가 같고, 조사항목이 같고, 날짜가 다른 회원수치들의 평균
-				
+				try {
+					CallableStatement cstmt = db.getConnection().prepareCall("{call User_avg(?,?,?)}");
+					cstmt.setInt(1, Integer.parseInt(id));
+					cstmt.setString(2, examination);
+					cstmt.registerOutParameter(3, Types.FLOAT);
+					cstmt.executeQuery();
+					avg = cstmt.getFloat(3);
+					avgValueLabel.setText(Float.toString(avg));
+					cstmt.close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		
-		checkUpBox.setFont(new Font("맑은 고딕", Font.PLAIN, 10));
+		checkUpBox.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		checkUpBox.setBounds(12, 451, 160, 22);
 		
-		diseaseBox.setFont(new Font("맑은 고딕", Font.PLAIN, 10));
+		diseaseBox.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		diseaseBox.setBounds(184, 451, 160, 22);
 		
-		examinationBox.setFont(new Font("맑은 고딕", Font.PLAIN, 10));
+		examinationBox.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		examinationBox.setBounds(356, 451, 160, 22);
 		
 		graphPanel.add(checkUpBox);
@@ -145,21 +183,6 @@ public class mainUI extends JFrame {
 		examinationLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		examinationLabel.setBounds(356, 421, 127, 29);
 		graphPanel.add(examinationLabel);
-		
-		//-----------------------------수치 평균 구하기---------------------------------
-		JLabel avgValueLabel = new JLabel("0");
-		avgValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		avgValueLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 10));
-		avgValueLabel.setBounds(528, 451, 127, 22);
-		graphPanel.add(avgValueLabel);
-		
-		
-		
-		//------------------------------수치 평균 구하기 end-----------------------------------
-		JLabel avgLabel = new JLabel("수치 평균");
-		avgLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		avgLabel.setBounds(528, 421, 127, 29);
-		graphPanel.add(avgLabel);
 		
 		JLabel lblNewLabel = new JLabel("회원 정보");
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 15));
