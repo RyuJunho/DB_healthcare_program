@@ -24,7 +24,7 @@ public class data_UI extends JFrame{
 	String [] checkup = {"ALT","AST","B형간염항원","B형간염항체","HDL-콜레스테롤","LDL-콜레스테롤","감마지티피","감염검사경과","시력 (우)","시력 (좌)","식전혈당","신장",
 			"요단백","청력 (우)","청력 (좌)","체중","체질량지수","총콜레스테롤","트리글리세라이드","허리둘레","혈색소","혈압","혈청크레아티닌","흉부방사선검사"};
 	String [] checkup_2 = {"신장","체중","허리둘레","체질량지수","시력(좌)","시력(우)","청력(좌)","청력(우)","혈압","요단백","혈색소","식전혈당",
-			"총콜레스테롤","HDL-콜레스테롤","트리글리세라이드","LDL-콜레스테롤","혈청크레아티닌","AST","ALT","감마지티피","B형간염항원","B형간염항체","감염검사결과","흉부방사선검사"};
+			"총콜레스테롤","HDL-콜레스테롤","트리글리세라이드","LDL-콜레스테롤","혈청크레아티닌","AST(SGOT)","ALT(SGPT)","감마지티피(y-GTP)","B형간염항원","B형간염항체","감염검사결과","흉부방사선검사"};
 	//생성자
 	public data_UI(String user_id) {
 	
@@ -75,7 +75,7 @@ public class data_UI extends JFrame{
 			
 		//데이터 입력 문구
 		JLabel registration_lb = new JLabel("데이터를 입력하세요");
-		registration_lb.setBounds(800,10,200,80);
+		registration_lb.setBounds(850,10,200,80);
 		c.add(registration_lb);
 
 		JLabel research_lb = new JLabel("검진항목");
@@ -142,9 +142,8 @@ public class data_UI extends JFrame{
 				
 				if (flag) {
 					//회원수치 등록
-					// 멈춰버림
 					for (int i=0;i<24;i++) {
-						Data.RegistrationData(Integer.parseInt(user_id),lb_arr[i].getText(),Integer.parseInt(tf_arr[i].getText()));
+						Data.RegistrationData(Integer.parseInt(user_id),lb_arr[i].getText(),Integer.parseInt(tf_arr[num_arr[i]].getText()));
 					}
 				
 				}
@@ -160,8 +159,21 @@ public class data_UI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("수정버튼 클릭");
 					
+				// 클릭한 열의 날짜 가져옴
+				String date = data_table.getValueAt(data_table.getSelectedRow(),0).toString();
+				date = date.substring(2,10).replaceAll("-","");		// ex) "221202"
+				
 				//회원수치 수정
-				Data.CorrectionData();
+				for (int i=0;i<24;i++) {
+					// 텍스트필드값이 데이터베이스 값과 다르면
+					if (Data.data_not_equal(Integer.parseInt(user_id),lb_arr[i].getText(),tf_arr[num_arr[i]].getText(),date)) {
+						System.out.println(lb_arr[i].getText());
+						System.out.println(tf_arr[num_arr[i]].getText());
+						// 업데이트
+						Data.CorrectionData(Integer.parseInt(user_id),lb_arr[i].getText(),tf_arr[num_arr[i]].getText(),date);
+					}
+				}
+				
 			}
 		});
 		
@@ -268,7 +280,7 @@ public class data_UI extends JFrame{
 				lb_arr[i] = new JLabel(checkup_2[i]);
 				tf_arr[num_arr[i]] = new JTextField();
 				lb_arr[i].setBounds(400,0 + i*40,500,80);
-				tf_arr[num_arr[i]].setBounds(500,30 + i*40 ,170,20); 
+				tf_arr[num_arr[i]].setBounds(550,30 + i*40 ,170,20); 
 				add(lb_arr[i]);
 				add(tf_arr[num_arr[i]]);
 			}
