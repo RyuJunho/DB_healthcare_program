@@ -8,6 +8,13 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+
 import DB.DB_Conn_Query;
 
 public class DataSystem {
@@ -37,6 +44,39 @@ public class DataSystem {
 			}
 			
 		}catch(SQLException e2) {System.out.println("데이터 출력 실패");}
+	}
+	
+	// JTable 갱신
+	public void Table_F5 (JTable table, DefaultTableModel model, int user_id) {
+
+		model.setNumRows(0);	//테이블 초기화
+		
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+		TableColumnModel tcm = table.getColumnModel();
+	
+		// 회원테이블(JTable)에 데이터 삽입
+				try {
+					// 쿼리문
+					String sql = "SELECT 검사날짜 "
+							+"FROM 회원수치 "
+							+"WHERE 회원수치.ID = " + user_id
+							+" GROUP BY 검사날짜"
+							+" ORDER BY 검사날짜 ASC";
+					
+					ResultSet rs = db.executeQuery(sql);
+					// 결과를 변수에 저장
+					while(rs.next()) {
+						String row[] = new String[1];
+						row[0] = rs.getString(1).substring(0,10);
+						model.addRow(row);		//JTable 에 한줄 삽입
+					}
+				}catch(SQLException e2){ System.out.println("데이터 삽입 실패");}
+			
+				// 테이블 값 중앙정렬
+				for(int i =0;i<tcm.getColumnCount();i++) {
+					tcm.getColumn(i).setCellRenderer(dtcr);
+				}	
 	}
 	
 	// 회원수치 등록
@@ -93,9 +133,9 @@ public class DataSystem {
 	
 	
 		pstmt.executeUpdate();
-			
 		
-		}catch(SQLException e3) {System.out.println("등록 실패");}
+		
+		}catch(SQLException e3) {System.out.println("등록 실패"); JOptionPane.showMessageDialog(null, "등록 실패","등록 실패",JOptionPane.ERROR_MESSAGE);}
 	}
 	
 	// 회원수치 비교 (수정과정에서 사용)
@@ -140,7 +180,7 @@ public class DataSystem {
 			pstmt.executeUpdate();
 			
 		
-		}catch(SQLException e2) {System.out.println("수정 실패");}
+		}catch(SQLException e2) {System.out.println("수정 실패"); JOptionPane.showMessageDialog(null, "수정 실패","수정 실패",JOptionPane.ERROR_MESSAGE);}
 	}
 	
 	// 회원수치 삭제
@@ -156,8 +196,8 @@ public class DataSystem {
 			pstmt.setString(2, date);
 			
 			pstmt.executeUpdate();
-			
+			JOptionPane.showMessageDialog(null, "삭제 완료","삭제 완료",JOptionPane.INFORMATION_MESSAGE);
 		
-		}catch(SQLException e2) {System.out.println("삭제 실패");}
+		}catch(SQLException e2) {System.out.println("삭제 실패"); JOptionPane.showMessageDialog(null, "삭제 실패","삭제 실패",JOptionPane.ERROR_MESSAGE);}
 	}
 }

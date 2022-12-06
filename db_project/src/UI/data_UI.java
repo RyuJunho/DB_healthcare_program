@@ -44,7 +44,7 @@ public class data_UI extends JFrame{
 		
 		JScrollPane data_table_pan = new JScrollPane(data_table);
 		data_table_pan.setBounds(50,80,200,300);
-
+		
 		
 		// 회원테이블(JTable)에 데이터 삽입
 		try {
@@ -136,6 +136,7 @@ public class data_UI extends JFrame{
 				for (int i=0;i<24;i++) {
 					if (tf_arr[i].getText().equals("")) {
 						flag = false;
+						JOptionPane.showMessageDialog(null, "빈칸이 있습니다","등록 실패",JOptionPane.ERROR_MESSAGE);
 						break;
 					}		
 				}
@@ -145,7 +146,8 @@ public class data_UI extends JFrame{
 					for (int i=0;i<24;i++) {
 						Data.RegistrationData(Integer.parseInt(user_id),lb_arr[i].getText(),Integer.parseInt(tf_arr[num_arr[i]].getText()));
 					}
-				
+					JOptionPane.showMessageDialog(null, "등록 완료","등록 완료",JOptionPane.INFORMATION_MESSAGE);
+					Data.Table_F5(data_table, model, Integer.parseInt(user_id));
 				}
 			}
 		});
@@ -163,17 +165,28 @@ public class data_UI extends JFrame{
 				String date = data_table.getValueAt(data_table.getSelectedRow(),0).toString();
 				date = date.substring(2,10).replaceAll("-","");		// ex) "221202"
 				
-				//회원수치 수정
+				boolean flag = true;
+				// 비어있는 텍스트필드가 있으면
 				for (int i=0;i<24;i++) {
-					// 텍스트필드값이 데이터베이스 값과 다르면
-					if (Data.data_not_equal(Integer.parseInt(user_id),lb_arr[i].getText(),tf_arr[num_arr[i]].getText(),date)) {
-						System.out.println(lb_arr[i].getText());
-						System.out.println(tf_arr[num_arr[i]].getText());
-						// 업데이트
-						Data.CorrectionData(Integer.parseInt(user_id),lb_arr[i].getText(),tf_arr[num_arr[i]].getText(),date);
-					}
+					if (tf_arr[i].getText().equals("")) {
+						flag = false;
+						JOptionPane.showMessageDialog(null, "빈칸이 있습니다","등록 실패",JOptionPane.ERROR_MESSAGE);
+						break;
+					}		
 				}
 				
+				// 비어있는 텍스트필드가 없으면
+				if (flag) {
+					for (int i=0;i<24;i++) {
+						// 텍스트필드값이 데이터베이스 값과 다르면
+						if (Data.data_not_equal(Integer.parseInt(user_id),lb_arr[i].getText(),tf_arr[num_arr[i]].getText(),date)) {
+							// 회원수치 수정
+							Data.CorrectionData(Integer.parseInt(user_id),lb_arr[i].getText(),tf_arr[num_arr[i]].getText(),date);
+						}
+					}
+					JOptionPane.showMessageDialog(null, "수정 완료","수정 완료",JOptionPane.INFORMATION_MESSAGE);
+					Data.Table_F5(data_table, model, Integer.parseInt(user_id));
+				}
 			}
 		});
 		
@@ -192,6 +205,7 @@ public class data_UI extends JFrame{
 				
 				// 회원수치 삭제
 				Data.DeleteData(Integer.parseInt(user_id), date);
+				Data.Table_F5(data_table, model, Integer.parseInt(user_id));
 			}
 		});
 		
@@ -288,6 +302,7 @@ public class data_UI extends JFrame{
 			
 		}
 	}
+
 	// -------------------------------------------회원수치 입력창 패널 클래스 <끝>---------------------------------------------------- 
 	public static void main(String[] args) {
 		// 로그인 화면 생성
