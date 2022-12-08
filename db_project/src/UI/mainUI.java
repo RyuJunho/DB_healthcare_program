@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class mainUI extends JFrame {
 	DB_Conn_Query db = new DB_Conn_Query();
+	public static JPanel chartPanel;
 	JComboBox checkUpBox;
 	JComboBox diseaseBox;
 	JComboBox examinationBox;
@@ -82,29 +83,28 @@ public class mainUI extends JFrame {
 		
 		
 		//--------------------------회원 정보 가져오기 end---------------------------
-		JPanel graphPanel = new JPanel();
-		graphPanel.setBackground(SystemColor.inactiveCaptionBorder);
-		graphPanel.setBounds(455, 96, 700, 483);
-		getContentPane().add(graphPanel);
-		graphPanel.setLayout(null);
-		//chart
-		/*double[] xData = new double[] {0.0, 1.0, 2.0};
-		double[] yData = new double[] {2.0, 1.0, 0.0}; 
-		XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
-
-		//그래프 패널
-		getContentPane().add(new XChartPanel(chart));*/
+		chartPanel = new JPanel();
+		chartPanel.setBackground(SystemColor.inactiveCaptionBorder);
+		chartPanel.setBounds(455, 96, 700, 483);
+		getContentPane().add(chartPanel);
+		chartPanel.setLayout(null);
+		
+		JPanel cPanel = new chartPanel();
+		chartPanel.add(cPanel);
+		cPanel.setVisible(true);
+		cPanel.setSize(600,400);
+		cPanel.setBounds(20, 20, 600, 400);
 		
 		JLabel avgValueLabel = new JLabel("0");
 		avgValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		avgValueLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		avgValueLabel.setBounds(528, 451, 127, 22);
-		graphPanel.add(avgValueLabel);
+		avgValueLabel.setBounds(536, 451, 127, 22);
+		chartPanel.add(avgValueLabel);
 		
 		JLabel avgLabel = new JLabel("수치 평균");
 		avgLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		avgLabel.setBounds(528, 421, 127, 29);
-		graphPanel.add(avgLabel);
+		avgLabel.setBounds(536, 421, 127, 29);
+		chartPanel.add(avgLabel);
 		
 		//-------------------------콤보박스 데이터 가져오기--------------------------------
 		ComboBoxData combo = new ComboBoxData();
@@ -120,8 +120,8 @@ public class mainUI extends JFrame {
 				//검진항목이 선택되면 그에 따른 질환명 데이터 콤보박스 출력
 				String[] diseaseData = combo.getData("질환명",checkUpBox.getSelectedItem().toString());
 				diseaseBox.setModel(new DefaultComboBoxModel(diseaseData));
-				//검진항목 바뀌었을 때 조사항목 콤보박스 비우기??
-				
+				//검진항목 바뀌었을 때 조사항목 콤보박스 비우기
+				examinationBox.removeAllItems();
 			}
 		});
 		
@@ -156,33 +156,33 @@ public class mainUI extends JFrame {
 		});
 		
 		checkUpBox.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		checkUpBox.setBounds(12, 451, 160, 22);
+		checkUpBox.setBounds(20, 451, 160, 22);
 		
 		diseaseBox.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		diseaseBox.setBounds(184, 451, 160, 22);
+		diseaseBox.setBounds(192, 451, 160, 22);
 		
 		examinationBox.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		examinationBox.setBounds(356, 451, 160, 22);
+		examinationBox.setBounds(364, 451, 160, 22);
 		
-		graphPanel.add(checkUpBox);
-		graphPanel.add(diseaseBox);
-		graphPanel.add(examinationBox);
+		chartPanel.add(checkUpBox);
+		chartPanel.add(diseaseBox);
+		chartPanel.add(examinationBox);
 		//--------------------------콤보박스 데이터 가져오기 end----------------------------
 		
 		JLabel checkUpLabel = new JLabel("검진 항목");
 		checkUpLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		checkUpLabel.setBounds(12, 421, 127, 29);
-		graphPanel.add(checkUpLabel);
+		checkUpLabel.setBounds(20, 421, 127, 29);
+		chartPanel.add(checkUpLabel);
 		
 		JLabel diseaseLabel = new JLabel("질환");
 		diseaseLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		diseaseLabel.setBounds(184, 421, 127, 29);
-		graphPanel.add(diseaseLabel);
+		diseaseLabel.setBounds(192, 421, 127, 29);
+		chartPanel.add(diseaseLabel);
 		
 		JLabel examinationLabel = new JLabel("조사 항목");
 		examinationLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		examinationLabel.setBounds(356, 421, 127, 29);
-		graphPanel.add(examinationLabel);
+		examinationLabel.setBounds(364, 421, 127, 29);
+		chartPanel.add(examinationLabel);
 		
 		JLabel lblNewLabel = new JLabel("회원 정보");
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 15));
