@@ -168,6 +168,8 @@ public class data_UI extends JFrame{
 		public void actionPerformed(ActionEvent e){
 				System.out.println("등록버튼 클릭");
 				
+				String date = JOptionPane.showInputDialog(null,"날짜를 입력하세요(/나 -제외) (ex 221210)","날짜입력",JOptionPane.QUESTION_MESSAGE);
+				
 				boolean flag = true;
 				// 비어있는 텍스트필드가 있으면
 				for (int i=0;i<24;i++) {
@@ -181,7 +183,7 @@ public class data_UI extends JFrame{
 				if (flag) {
 					//회원수치 등록
 					for (int i=0;i<24;i++) {
-						Data.RegistrationData(Integer.parseInt(user_id),lb_arr[i].getText(),Integer.parseInt(tf_arr[num_arr[i]].getText()));
+						Data.RegistrationData(Integer.parseInt(user_id),date,lb_arr[i].getText(),Integer.parseInt(tf_arr[num_arr[i]].getText()));
 					}
 					JOptionPane.showMessageDialog(null, "등록 완료","등록 완료",JOptionPane.INFORMATION_MESSAGE);
 					Data.Table_F5(data_table, model, Integer.parseInt(user_id));

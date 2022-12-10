@@ -38,12 +38,12 @@ public class DataSystem {
 			int i = 0;
 			// 결과를 변수에 저장
 			while(rs.next()) {
-					String A = rs.getString(1);
-					String B = rs.getString(2);
-					String C = rs.getString(3);
+					String A = rs.getString(1);		// 조사항목
+					String B = rs.getString(2);		// 수치값
+					String C = rs.getString(3);		// 이상유무
 					// 이상유무가 있으면 값 뒤에 "e"를 붙여 전달
-					if (C.equals("1")){
-						B = B.concat("e");
+					if (C.equals("1")){	// 이상유무 값이 "1" 이면
+						B = B.concat("e");	// 수치값 뒤에 "e"를 붙임
 					}
 					data_arr[i] = B;
 					i++;		
@@ -52,6 +52,7 @@ public class DataSystem {
 		}catch(SQLException e2) {System.out.println("데이터 출력 실패");}
 	}
 	
+	// JTable 새로고침
 	public void Table_F5 (JTable table, DefaultTableModel model, int user_id) {
 
 		model.setNumRows(0);	//테이블 초기화
@@ -118,15 +119,8 @@ public class DataSystem {
 	}
 	
 	// 회원수치 등록
-	public void RegistrationData(int id, String checkup, int checkup_value) {
-		
-		// 현재날짜
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Date now = new Date();
-		String nowDate = sdf.format(now);
-		nowDate = nowDate.substring(2,8);
-		
-		
+	public void RegistrationData(int id, String date, String checkup, int checkup_value) {
+	
 		// 질환의 성별값 
 		String sex = "";
 		try {
@@ -143,8 +137,7 @@ public class DataSystem {
 		
 
 		// 질환의 성별값이 공통이 아니면 회원의 성별값과 동일하게함
-		// 공백 안주니 비교 못함;;
-		if (!sex.equals("공통 ")){
+		if (!sex.trim().equals("공통")){
 			// 회원의 성별
 			try {
 				String sql = "SELECT 성별 FROM 회원 where ID = " + id;
@@ -162,16 +155,13 @@ public class DataSystem {
 		Connection con = db.getConnection();
 		PreparedStatement pstmt = con.prepareStatement("insert into 회원수치 values(?,?,'"+checkup+"',?,?,?)");
 		
-		pstmt.setString(1, nowDate);
+		pstmt.setString(1, date);
 		pstmt.setInt(2, id);
-		//pstmt.setString(3, checkup);
 		pstmt.setString(3, sex);
 		pstmt.setInt(4, checkup_value);
 		pstmt.setString(5, "0");
 	
-	
 		pstmt.executeUpdate();
-		
 		
 		}catch(SQLException e3) {System.out.println("등록 실패"); JOptionPane.showMessageDialog(null, "등록 실패","등록 실패",JOptionPane.ERROR_MESSAGE);}
 	}
@@ -186,7 +176,6 @@ public class DataSystem {
 
 			pstmt.setInt(1, id);
 			pstmt.setString(2, date);
-			//pstmt.setString(3, checkup);
 			
 			ResultSet src = pstmt.executeQuery();
 			
@@ -194,7 +183,6 @@ public class DataSystem {
 			while(src.next()) {
 				value = src.getString(1);
 			}
-			
 			
 			if (value.equals(checkup_value)) {return false;}
 			else {return true;}
@@ -212,7 +200,6 @@ public class DataSystem {
 
 			pstmt.setInt(1, Integer.parseInt(checkup_value));
 			pstmt.setInt(2, id);
-			//pstmt.setString(3, checkup);
 			pstmt.setString(3, date);
 		
 			pstmt.executeUpdate();
@@ -239,4 +226,5 @@ public class DataSystem {
 		}catch(SQLException e2) {System.out.println("삭제 실패"); JOptionPane.showMessageDialog(null, "삭제 실패","삭제 실패",JOptionPane.ERROR_MESSAGE);}
 	}
 }
+
 
