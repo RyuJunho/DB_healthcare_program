@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
@@ -28,7 +29,7 @@ public class DataSystem {
 			System.out.println("클릭한 열의 날짜에 해당하는 데이터 출력");
 			
 			// 쿼리문
-			String sql = "SELECT 조사항목, 수치값 FROM 회원수치 "
+			String sql = "SELECT 조사항목, 수치값, 이상유무 FROM 회원수치 "
 					+ "WHERE 검사날짜 = '" + date
 					+ "' AND ID = " + id
 					+ " ORDER BY 조사항목 ASC";
@@ -39,6 +40,11 @@ public class DataSystem {
 			while(rs.next()) {
 					String A = rs.getString(1);
 					String B = rs.getString(2);
+					String C = rs.getString(3);
+					// 이상유무가 있으면 값 뒤에 "e"를 붙여 전달
+					if (C.equals("1")){
+						B = B.concat("e");
+					}
 					data_arr[i] = B;
 					i++;		
 			}
@@ -46,7 +52,6 @@ public class DataSystem {
 		}catch(SQLException e2) {System.out.println("데이터 출력 실패");}
 	}
 	
-	// JTable 갱신
 	public void Table_F5 (JTable table, DefaultTableModel model, int user_id) {
 
 		model.setNumRows(0);	//테이블 초기화
@@ -77,6 +82,39 @@ public class DataSystem {
 				for(int i =0;i<tcm.getColumnCount();i++) {
 					tcm.getColumn(i).setCellRenderer(dtcr);
 				}	
+	}
+	
+	// 의심질환 검색
+	public String get_suspected_disease(ArrayList<String> checkup_list) {
+		
+		String s = "조사항목 = '"+checkup_list.get(0)+"'";
+		String disease_str = "";
+		
+		for (int i = 1; i<checkup_list.size(); i++) {
+			s = s.concat(" or 조사항목 = '"+checkup_list.get(i)+"'");
+		}
+		
+		// 배열로 이상수치 받아와서 의심질환 검색
+		try {
+			String sql = "SELECT 질환명 from 질환 where  "+s
+					+ " group by 질환명";
+			//System.out.println(sql);
+			ResultSet src = db.executeQuery(sql);
+
+			//결과값(의심질환) ,로 연결하여 반환
+			int i=0;
+			while(src.next()) {
+				if (i==0) {
+					disease_str = src.getString(1).trim();
+				}
+				else {
+					disease_str = disease_str.concat(", "+src.getString(1).trim());
+				}
+				i++;
+			}
+			
+			return disease_str;
+		}catch(SQLException e2) {System.out.println("의심질환 가져오는 과정에서 sql에러");	return "";}
 	}
 	
 	// 회원수치 등록
@@ -201,3 +239,4 @@ public class DataSystem {
 		}catch(SQLException e2) {System.out.println("삭제 실패"); JOptionPane.showMessageDialog(null, "삭제 실패","삭제 실패",JOptionPane.ERROR_MESSAGE);}
 	}
 }
+

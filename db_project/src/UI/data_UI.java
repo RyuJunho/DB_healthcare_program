@@ -12,6 +12,7 @@ import Control.DataSystem;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class data_UI extends JFrame{
@@ -106,19 +107,55 @@ public class data_UI extends JFrame{
 		
 		// --------------------------------------------------------------------------------------------------------
 
+		// 의심질환 출력 레이블
+		JLabel suspected_disease_lb = new JLabel("의심질환 : 없음");
+		suspected_disease_lb.setBounds(310,500,1000,30);
+		c.add(suspected_disease_lb);
+		
+		
 		// 회원테이블(JTable) 클릭 시
 		data_table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// 클릭한 열의 날짜 가져옴
+				boolean flag = false;	//이상수치가 있는지 확인할 플래그 변수
+				
+				ArrayList<String> checkup_list = new ArrayList<String>();	// 이상수치가 있는 조사항목 저장할 배열
+				
+				// JTable 클릭한 열의 날짜 가져옴
 				String date = data_table.getValueAt(data_table.getSelectedRow(),0).toString();
 				date = date.substring(2,10).replaceAll("-","");		// ex) "221202"
-				
 				// 날짜에 해당하는 회원수치 데이터 가져옴 (문자열 배열을 반환받음)
 				String[] data_arr = new String[25];
 				Data.GetTableData(date, user_id, data_arr);
 				
+				int j=0;
 				// 텍스트필드에 값 채우기
-				for (int i=0;i<24;i++) { tf_arr[i].setText(data_arr[i]); }		
+				for (int i=0;i<24;i++) {
+			
+					int index = data_arr[i].length();
+					//이상수치가 있으면 글자색 빨간색
+					if (data_arr[i].substring(index-1,index).equals("e")) {
+						tf_arr[i].setForeground(Color.RED);
+						tf_arr[i].setText(data_arr[i].substring(0,index-1)); 
+						flag = true;
+						checkup_list.add(checkup[i]);	//이상수치가 있는 조사항목 저장
+						j += 1;
+					}
+					//이상없으면 글자색 검은색
+					else { 
+						tf_arr[i].setForeground(Color.BLACK);
+						tf_arr[i].setText(data_arr[i]); 
+					}	 
+				}
+				 
+		
+				// 이상 수치가 있으면 의심질환 출력
+				if (flag) {
+					String disease_str = Data.get_suspected_disease(checkup_list);
+					suspected_disease_lb.setText("의심질환 : " + disease_str);
+				}
+				else {
+					suspected_disease_lb.setText("의심질환 : 없음");
+				}
 			}
 		});
 		
