@@ -1,5 +1,6 @@
 package Control;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -88,32 +89,26 @@ public class DataSystem {
 	// 의심질환 검색
 	public String get_suspected_disease(ArrayList<String> checkup_list) {
 		
-		String s = "조사항목 = '"+checkup_list.get(0)+"'";
 		String disease_str = "";
-		
-		for (int i = 1; i<checkup_list.size(); i++) {
-			s = s.concat(" or 조사항목 = '"+checkup_list.get(i)+"'");
-		}
-		
+		String disease = "";
+	
 		// 배열로 이상수치 받아와서 의심질환 검색
 		try {
-			String sql = "SELECT 질환명 from 질환 where  "+s
-					+ " group by 질환명";
-			//System.out.println(sql);
-			ResultSet src = db.executeQuery(sql);
-
-			//결과값(의심질환) ,로 연결하여 반환
-			int i=0;
-			while(src.next()) {
-				if (i==0) {
-					disease_str = src.getString(1).trim();
+			for (int i = 0; i<checkup_list.size(); i++) {
+				// 저장 프로시저 호출
+				CallableStatement cstmt = db.con.prepareCall("{call USER_suspected_disease('"+checkup_list.get(i) +"',?)");
+				cstmt.registerOutParameter(1, java.sql.Types.NCHAR);
+				cstmt.execute();
+				disease = cstmt.getString(1).trim();	// 저장프로시저에서 받아온 값
+				if(i==0) {
+					disease_str = disease;
 				}
 				else {
-					disease_str = disease_str.concat(", "+src.getString(1).trim());
+					disease_str = disease_str.concat(", "+disease);
 				}
-				i++;
 			}
-			
+	
+			System.out.println(disease_str);	// 의심질환들 저장한 문자열 리턴 (ex A, B, C)
 			return disease_str;
 		}catch(SQLException e2) {System.out.println("의심질환 가져오는 과정에서 sql에러");	return "";}
 	}
@@ -226,5 +221,4 @@ public class DataSystem {
 		}catch(SQLException e2) {System.out.println("삭제 실패"); JOptionPane.showMessageDialog(null, "삭제 실패","삭제 실패",JOptionPane.ERROR_MESSAGE);}
 	}
 }
-
 

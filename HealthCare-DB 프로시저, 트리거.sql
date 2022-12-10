@@ -7,17 +7,17 @@ WHERE 질환.조사항목 = 회원수치.조사항목 AND
 
 -- User_suspected_disease 프로시저 : 이상 수치에 따라 의심되는 질병을 알려주는 프로시저
 -- 구현 미완료
-CREATE OR REPLACE PROCEDURE User_suspected_disease (
-    Pi_조사항목 IN NCHAR,
-    Pi_ID IN NUMBER,
-    Pi_이상유무 IN NCHAR,
-    Pi_검사날짜 IN NCHAR,
-    Po_의심질환 OUT NCHAR )
+create or replace NONEDITIONABLE PROCEDURE USER_suspected_disease(
+    Pi_조사항목 IN 질환.조사항목%TYPE,
+    Po_의심질환 OUT 질환.질환명%TYPE)
 AS
-    V_의심질환 NCHAR(50);
 BEGIN
-    
+    select 질환명 INTO Po_의심질환
+    from 질환
+    where 조사항목 = Pi_조사항목
+    group by 질환명;
 END;
+
 
 -- User_avg 프로시저 : 회원 수치의 평균을 계산하는 프로시저
 -- 조사항목별 수치값의 평균
