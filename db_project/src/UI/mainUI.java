@@ -14,6 +14,7 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +39,8 @@ public class mainUI extends JFrame {
 	float avg;
 	private JTable dataTable;
 	private DefaultTableModel model;
+	JLabel dateValueLabel;
+	ArrayList<String> dateArray = new ArrayList<String>();
 	
 	public mainUI(String id) {
 		setTitle("Main");
@@ -101,13 +104,13 @@ public class mainUI extends JFrame {
 		
 		
 		JLabel avgValueLabel = new JLabel("0");
-		avgValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		avgValueLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		avgValueLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		avgValueLabel.setBounds(355, 311, 160, 22);
 		chartPanel.add(avgValueLabel);
 		
 		JLabel avgLabel = new JLabel("수치 평균");
-		avgLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		avgLabel.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		avgLabel.setBounds(355, 281, 127, 29);
 		chartPanel.add(avgLabel);
 		
@@ -125,7 +128,6 @@ public class mainUI extends JFrame {
 				//검진항목이 선택되면 그에 따른 질환명 데이터 콤보박스 출력
 				String[] diseaseData = combo.getData("질환명",checkUpBox.getSelectedItem().toString());
 				diseaseBox.setModel(new DefaultComboBoxModel(diseaseData));
-				diseaseBox.setSelectedIndex(0);
 				//검진항목 바뀌었을 때 조사항목 콤보박스 비우기
 				examinationBox.removeAllItems();
 			}
@@ -136,12 +138,12 @@ public class mainUI extends JFrame {
 				//질환명이 선택되면 그에 따른 조사항목 데이터 콤보박스 출력
 				String[] examinationData = combo.getData("조사항목",diseaseBox.getSelectedItem().toString());
 				examinationBox.setModel(new DefaultComboBoxModel(examinationData));
-				examinationBox.setSelectedIndex(0);
 			}
 		});
 		
 		examinationBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dateArray.clear();
 				model.setNumRows(0);
 				//하나라도 선택되지 않으면 수치 평균 출력 x
 				if(!(checkUpBox.getSelectedItem()==null||diseaseBox.getSelectedItem()==null||examinationBox.getSelectedItem()==null)) {
@@ -172,17 +174,31 @@ public class mainUI extends JFrame {
 							+ "조사항목 = '"+examination+"'";
 					ResultSet rs = db.executeQuery(sql2);
 					try {
-						int i=0,j=0;
 						while(rs.next()) {
 							String date = rs.getDate(1).toString();
 							String value = Float.toString(rs.getFloat(2));
 							String tf = rs.getString(3);
-							//TableCellRenderer render = dataTable.getCellRenderer(i++, j++);
-							//render.setForeground(Color.red);
 							model.addRow(new Object[] {date,value});
+							//이상수치라면 dateArray에 날짜 저장
+							if(tf.equals("1")) {
+								dateArray.add(date);
+							}
 						}
 					} catch (SQLException e1) {
 						e1.printStackTrace();
+					}
+					//이상수치인 날짜가 있으면 ,로 연결하여 레이블에 출력
+					if(dateArray.size()!=0) {
+						String date="";
+						int i; 
+						for(i=0;i<dateArray.size()-1;i++) {
+							date+=dateArray.get(i)+", ";
+						}
+						date+=dateArray.get(i);
+						dateValueLabel.setText(date);
+					}
+					else {
+						dateValueLabel.setText("해당 없음");
 					}
 				}
 				else {
@@ -207,22 +223,22 @@ public class mainUI extends JFrame {
 		//--------------------------콤보박스 데이터 가져오기 end----------------------------
 		
 		JLabel checkUpLabel = new JLabel("검진 항목");
-		checkUpLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		checkUpLabel.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		checkUpLabel.setBounds(355, 44, 127, 29);
 		chartPanel.add(checkUpLabel);
 		
 		JLabel diseaseLabel = new JLabel("질환");
-		diseaseLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		diseaseLabel.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		diseaseLabel.setBounds(355, 120, 127, 29);
 		chartPanel.add(diseaseLabel);
 		
 		JLabel examinationLabel = new JLabel("조사 항목");
-		examinationLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		examinationLabel.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		examinationLabel.setBounds(355, 200, 127, 29);
 		chartPanel.add(examinationLabel);
 		
 		JLabel lblNewLabel_4 = new JLabel("날짜별 수치 기록");
-		lblNewLabel_4.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+		lblNewLabel_4.setFont(new Font("맑은 고딕", Font.BOLD, 13));
 		lblNewLabel_4.setBounds(22, 10, 188, 24);
 		chartPanel.add(lblNewLabel_4);
 		
@@ -231,7 +247,7 @@ public class mainUI extends JFrame {
 		model = new DefaultTableModel(colName,0);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(22, 44, 310, 289);
+		panel.setBounds(22, 44, 310, 208);
 		chartPanel.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
@@ -241,6 +257,17 @@ public class mainUI extends JFrame {
 		dataTable = new JTable(model);
 		dataTable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		scrollPane.setViewportView(dataTable);
+		
+		JLabel dateLabel = new JLabel("이상 수치인 날짜");
+		dateLabel.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		dateLabel.setBounds(22, 281, 127, 29);
+		chartPanel.add(dateLabel);
+		
+		dateValueLabel = new JLabel("해당 없음");
+		dateValueLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		dateValueLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		dateValueLabel.setBounds(22, 311, 310, 22);
+		chartPanel.add(dateValueLabel);
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		
