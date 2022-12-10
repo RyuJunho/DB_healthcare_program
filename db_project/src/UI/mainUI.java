@@ -20,7 +20,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class mainUI extends JFrame {
 	DB_Conn_Query db = new DB_Conn_Query();
-	public static JPanel chartPanel;
 	JComboBox checkUpBox;
 	JComboBox diseaseBox;
 	JComboBox examinationBox;
@@ -83,17 +82,13 @@ public class mainUI extends JFrame {
 		
 		
 		//--------------------------회원 정보 가져오기 end---------------------------
-		chartPanel = new JPanel();
+		JPanel chartPanel = new JPanel();
 		chartPanel.setBackground(SystemColor.inactiveCaptionBorder);
 		chartPanel.setBounds(455, 96, 700, 483);
 		getContentPane().add(chartPanel);
 		chartPanel.setLayout(null);
 		
-		JPanel cPanel = new chartPanel();
-		chartPanel.add(cPanel);
-		cPanel.setVisible(true);
-		cPanel.setSize(600,400);
-		cPanel.setBounds(20, 20, 600, 400);
+		
 		
 		JLabel avgValueLabel = new JLabel("0");
 		avgValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -135,22 +130,30 @@ public class mainUI extends JFrame {
 		
 		examinationBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//조사항목이 선택되면 차트 업데이트, 수치 평균 출력
-				String checkUp = checkUpBox.getSelectedItem().toString();
-				String disease = diseaseBox.getSelectedItem().toString();
-				String examination = examinationBox.getSelectedItem().toString();
-				//평균 구하기
-				try {
-					CallableStatement cstmt = db.getConnection().prepareCall("{call User_avg(?,?,?)}");
-					cstmt.setInt(1, Integer.parseInt(id));
-					cstmt.setString(2, examination);
-					cstmt.registerOutParameter(3, Types.FLOAT);
-					cstmt.executeQuery();
-					avg = cstmt.getFloat(3);
-					avgValueLabel.setText(Float.toString(avg));
-					cstmt.close();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+				//하나라도 선택되지 않으면 수치 평균 출력 x
+				if(!(checkUpBox.getSelectedItem()==null||diseaseBox.getSelectedItem()==null||examinationBox.getSelectedItem()==null)) {
+					//조사항목이 선택되면 차트 업데이트, 수치 평균 출력
+					String checkUp = checkUpBox.getSelectedItem().toString();
+					String disease = diseaseBox.getSelectedItem().toString();
+					String examination = examinationBox.getSelectedItem().toString();
+					//평균 구하기
+					try {
+						//----------------------------  CallableStatement 활용 ----------------------------
+						CallableStatement cstmt = db.getConnection().prepareCall("{call User_avg(?,?,?)}");
+						cstmt.setInt(1, Integer.parseInt(id));
+						cstmt.setString(2, examination);
+						cstmt.registerOutParameter(3, Types.FLOAT);
+						cstmt.executeQuery();
+						avg = cstmt.getFloat(3);
+						avgValueLabel.setText(Float.toString(avg));
+						cstmt.close();
+						//--------------------------------------------------------------------------------
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					avgValueLabel.setText("");
 				}
 			}
 		});
