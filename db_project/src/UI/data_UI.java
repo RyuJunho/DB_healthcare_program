@@ -28,6 +28,12 @@ public class data_UI extends JFrame{
 			"총콜레스테롤","HDL-콜레스테롤","트리글리세라이드","LDL-콜레스테롤","혈청크레아티닌","AST(SGOT)","ALT(SGPT)","감마지티피(y-GTP)","B형간염항원","B형간염항체","감염검사결과","흉부방사선검사"};
 	//생성자
 	public data_UI(String user_id) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				new mainUI(user_id);
+			}
+		});
 	
 		
 		Container c = getContentPane();	// 컨텐트팬 추출
@@ -81,15 +87,15 @@ public class data_UI extends JFrame{
 
 		JLabel research_lb = new JLabel("검진항목");
 		research_lb.setBounds(310, 10, 500, 80);
-		add(research_lb);
+		getContentPane().add(research_lb);
 
 		JLabel disease_lb = new JLabel("질환명");
 		disease_lb.setBounds(500, 10, 500, 80);
-		add(disease_lb);
+		getContentPane().add(disease_lb);
 		
 		JLabel checkup_lb = new JLabel("조사항목");
 		checkup_lb.setBounds(700, 10, 500, 80);
-		add(checkup_lb);
+		getContentPane().add(checkup_lb);
 		
 		// 스크롤 부착할 패널
 		JPanel scroll_panel = new JPanel();

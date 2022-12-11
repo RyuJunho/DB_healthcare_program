@@ -315,6 +315,7 @@ public class mainUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				new data_UI(id);
+				dispose();
 			}
 		});
 		dataBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
