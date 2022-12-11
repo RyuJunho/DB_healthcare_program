@@ -146,7 +146,8 @@ public class mainUI extends JFrame {
 				dateArray.clear();
 				model.setNumRows(0);
 				//하나라도 선택되지 않으면 수치 평균 출력 x
-				if(!(checkUpBox.getSelectedItem()==null||diseaseBox.getSelectedItem()==null||examinationBox.getSelectedItem()==null)) {
+				if(!(checkUpBox.getSelectedItem()==null||diseaseBox.getSelectedItem()==null
+						||examinationBox.getSelectedItem()==null)) {
 					//조사항목이 선택되면 차트 업데이트, 수치 평균 출력
 					String checkUp = checkUpBox.getSelectedItem().toString();
 					String disease = diseaseBox.getSelectedItem().toString();
@@ -171,7 +172,8 @@ public class mainUI extends JFrame {
 					String sql2 = "SELECT 검사날짜, 수치값, 이상유무 "
 							+ "FROM 회원수치 "
 							+ "WHERE ID = "+id+" AND "
-							+ "조사항목 = '"+examination+"'";
+							+ "조사항목 = '"+examination+"' "
+							+ "ORDER BY 검사날짜";
 					ResultSet rs = db.executeQuery(sql2);
 					try {
 						while(rs.next()) {
@@ -292,7 +294,8 @@ public class mainUI extends JFrame {
 		dropBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int answer = JOptionPane.showConfirmDialog(null, "탈퇴하시겠습니까?", "회원 탈퇴",JOptionPane.YES_NO_OPTION );
+				int answer = JOptionPane.showConfirmDialog(null, "탈퇴하시겠습니까?"
+						, "회원 탈퇴",JOptionPane.YES_NO_OPTION );
 				if(answer == 0) {	//회원 탈퇴
 					String sql = "DELETE FROM 회원 WHERE ID = "+id;
 					db.executeUpdate(sql);

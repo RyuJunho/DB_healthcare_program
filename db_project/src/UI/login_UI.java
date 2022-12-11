@@ -22,8 +22,6 @@ public class login_UI extends JFrame{
 		titleLabel.setBounds(102,32,179,30);
 		c.add(titleLabel);
 		
-		
-		
 		//회원가입 버튼
 		JButton sign_up_btn = new JButton("회원가입");
 		sign_up_btn.setBounds(58,200,125,30);
